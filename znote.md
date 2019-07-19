@@ -11,7 +11,7 @@ logic function: $F$
 
 the k-th rule in BRB system can be written as:
 
-$R_k:if (A_1^k,\alpha_1^k) \wedge (A_2^k,\alpha_2^k) \wedge \cdots \wedge (A_{T_k}^k,\alpha_{T_k}^k)$ _then_ $\{(D_1,\overline{\beta}_{1k}),(D_2,\overline{\beta}_{2k}),\cdots,(D_N,\overline{\beta}_{Nk})\}$
+$$R_k:if\{(A_1^k,\alpha_1^k) \wedge (A_2^k,\alpha_2^k) \wedge \cdots \wedge (A_{T_k}^k,\alpha_{T_k}^k)\}then\{(D_1,\overline{\beta}_{1k}),(D_2,\overline{\beta}_{2k}),\cdots,(D_N,\overline{\beta}_{Nk})\}$$
 
 with a rule weight $\theta_k$
 and attribute weights $\delta_{k1},\delta_{k2},\cdots,\delta_{kT_k}$
@@ -44,8 +44,18 @@ O|I & A^1(w_1) & \cdots & A^L(w_L) \\
 \hline
 D_1 & \beta_{11} & \cdots & \beta_{1L} \\
 \vdots & \vdots & \ddots & \vdots \\
-D_N & \beta_N1 & \cdots & \beta_{NL}
+D_N & \beta_{N1} & \cdots & \beta_{NL}
 \end{array}
 $$
 
 evidential reasoning approach
+
+transform belief degrees into probability masses:
+
+$m_{j,k}=w_k\beta_{j,k},j=1,\cdots,N$
+
+$m_{D,k}=1-\sum_{j=1}^Nm_{j,k}=1-w_k\sum_{j=1}^{N}\beta_{j,k}$
+
+$\overline{m}_{D,k}=1-w_k$
+
+$\widetilde{m}_{D,k}=w_k(1-\sum_{j=1}^N\beta_{j,k})$

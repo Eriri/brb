@@ -39,7 +39,7 @@ $$\beta_{ik}=\overline{\beta}_{ik}\frac{\sum_{t=1}^{T_k}(\tau(t,k))\sum_{j=1}^{J
 belief rule expression matrinx for a rule base
 
 $$
-\begin{array}{l|clr}
+\begin{array}{c|}
 O|I & A^1(w_1) & \cdots & A^L(w_L) \\
 \hline
 D_1 & \beta_{11} & \cdots & \beta_{1L} \\
@@ -59,3 +59,34 @@ $m_{D,k}=1-\sum_{j=1}^Nm_{j,k}=1-w_k\sum_{j=1}^{N}\beta_{j,k}$
 $\overline{m}_{D,k}=1-w_k$
 
 $\widetilde{m}_{D,k}=w_k(1-\sum_{j=1}^N\beta_{j,k})$
+
+$m_{D,k}=\overline{m}_{D,k}+\widetilde{m}_{D,k}$
+
+the remaining degree of belief of unassigned to any consequent $m_{D,k}$ is split into two parts:$\overline{m}_{D,k}$ caused by the relative importance $w_k$ and $\widetilde{m}_{D,k}$ caused by the incompleteness
+
+suppose $m_{j,I(k)}$ is the combined degree of belief in $D_j$ by aggregating first $k$ rules,$m_{D,I(k)}$ is the remaining degress, let $m_{j,I(1)}=m_{j,1}$ and $m_{D,I(1)}=m_{D,1}$
+
+the combined degree of first $k+1$ rules can be generated as:
+
+$m_{j,I(k+1)}=K_{I(k+1)}[m_{j,I(k)}m_{j,k+1}+m_{j,I(k)}m_{D,k+1}+m_{D,I(k)}m_{j,k+1}]$
+
+$\overline{m}_{D,I(k+1)}=K_{I(k+1)}[\overline{m}_{D,I(k)}\overline{m}_{D,k+1}]$
+
+$\widetilde{m}_{D,I(k+1)}=K_{I(k+1)}[\widetilde{m}_{D,I(k)}\widetilde{m}_{D,k+1}+\widetilde{m}_{D,I(k)}\overline{m}_{D,k+1}+\overline{m}_{D,I(k)}\widetilde{m}_{D,k+1}]$
+
+$K_{I(k+1)}=[1-\sum_{j=1}^N\sum_{t=1,t \neq j}^Nm_{j,I(k)}m_{t,k+1}]^{-1}$
+
+$\beta_j=\frac{m_{j,I(L)}}{1-\overline{m}_{D,I(L)}},\beta_D=\frac{\widetilde{m}{D,I(L)}}{1-\overline{m}_{D,I(L)}},\sum_{j=1}^N\beta_j+\beta_D=1$
+
+an analytical ER algorithm is developed:
+
+$m_j=k[\prod_{i=1}^L(m_{j,i}+m_{D,i})-\prod_{i=1}^Lm_{D,i}]$
+
+$\overline{m}_D=k[\prod_{i=1}^L\overline{m}_{D,i}]$
+
+$\widetilde{m}_D=k[\prod_{i=1}^Lm_{D,i}-\prod_{i=1}^L\overline{m}_{H,i}]$
+
+$k=[\sum_{j=1}^N\prod_{i=1}^L(m_{j,i}+m_{D,i})-(N-1)\prod_{i=1}^Lm_{D,i}]^{-1}$
+
+$\beta_j=\frac{m_j}{1-\overline{m}_D},\beta_D=\frac{\widetilde{m}_D}{1-\overline{m}_D}$
+

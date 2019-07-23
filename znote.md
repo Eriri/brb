@@ -1,4 +1,5 @@
 # _belief rule-based system_
+
 rule-based mode: $R=<U,A,D,F>$
 
 antecedent atriibutes: $U=\{U_i,i=1,\cdots,T\}$  
@@ -18,7 +19,7 @@ and attribute weights $\delta_{k1},\delta_{k2},\cdots,\delta_{kT_k}$
 
 $\alpha_i^k$ and $\overline{\beta}_{ik}$ are belief degree
 
-aggregation function to calculate the toltal rule belief degree: 
+aggregation function to calculate the toltal rule belief degree:
 
 $$\alpha_k=\varphi((\delta_{k1},\alpha_1^k),(\delta_{k2},\alpha_2^k),\cdots,(\delta_{kT_k},\alpha_{T_k}^k))$$
 $$\{ex:\alpha_k=\prod_{i=1}^{T_k}(\alpha_i^k)^{\overline{\delta}_{ki}},\overline{\delta}_{ki}=\frac{\delta_{ki}}{\max_{j=1,\cdots,T_k}\delta_{kj}}\}$$
@@ -26,7 +27,6 @@ $$\{ex:\alpha_k=\prod_{i=1}^{T_k}(\alpha_i^k)^{\overline{\delta}_{ki}},\overline
 generating and normalizing the activation weight of $R_k$:
 
 $$w_k=\frac{\theta_k\alpha_k}{\sum_{i=1}^L\theta_i\alpha_i}$$
-
 
 distribution on the referential values are $S(A_i^*,\varepsilon_i)=\{(A_{ij},\alpha_{ij});j=1,\cdots,J_i\}$,the input $A_i^*$
 i is assessed to the referential value
@@ -89,4 +89,3 @@ $\widetilde{m}_D=k[\prod_{i=1}^Lm_{D,i}-\prod_{i=1}^L\overline{m}_{H,i}]$
 $k=[\sum_{j=1}^N\prod_{i=1}^L(m_{j,i}+m_{D,i})-(N-1)\prod_{i=1}^Lm_{D,i}]^{-1}$
 
 $\beta_j=\frac{m_j}{1-\overline{m}_D},\beta_D=\frac{\widetilde{m}_D}{1-\overline{m}_D}$
-

@@ -2,7 +2,7 @@
 
 rule-based mode: $R=<U,A,D,F>$
 
-antecedent atriibutes: $U=\{U_i,i=1,\cdots,T\}$  
+antecedent attributes: $U=\{U_i,i=1,\cdots,T\}$  
 
 referential values: $A=\{A_1,A_2,\cdots,A_T\},A_i=\{A_{ij},j=1,\cdots,J_i=|A_i|\}$
 

@@ -1,18 +1,26 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define rep(i,s,t) for(int i=(s);i<(t);i++)
+#define all(x) x.begin(),x.end()
+#define sz(x) ((int)x.size())
+#define fi first
+#define se second
 
 using referential=vector<double>;
 using attribute=vector<referential>;
 using distribution=map<int,double>;
 using antecedent_weight=vector<double>;
+using rule_weight=vector<double>;
+using belief_degress=vector<double>;
 
-attribute A;referential C;antecedent_weight delta;
+attribute A;referential C;
+antecedent_weight delta;
+rule_weight w;
 
 void transform(referential& r,double& a,distribution& c)
 {
-	int y=lower_bound(r.begin(),r.end(),a)-r.begin(),x=y-1;
-	if((y==0&&a<r[y])||y==r.size()) {}
-	else if(a==r[y]) c[y]=1.0;
+	int y=lower_bound(all(r),a)-r.begin(),x=y-1;
+	if((y==0&&a<r[y])||y==sz(r)){}else if(a==r[y])c[y]=1.0;
 	else c[x]=(r[y]-a)/(r[y]-r[x]);c[y]=1.0-c[x];
 }
 
@@ -21,51 +29,40 @@ struct rule
 	rule(){};
 	rule(vector<double> a,double c)
 	{
-		antecedent=vector<distribution>(A.size());
-		for(int i=0;i<A.size();i++)
-			transform(A[i],a[i],antecedent[i]);
+		antecedent.resize(A.size());
+		rep(i,0,sz(A))transform(A[i],a[i],antecedent[i]);
 		transform(C,c,consequent);
 	}
 	vector<distribution> antecedent;
 	distribution consequent;
-	double theta,w,D;
 };
 
 double individual_match_degree(distribution& a,distribution& b)
 {
-	return accumulate(a.begin(),a.end(),0.0,
-		[&](double c,pair<int,double> _){return c+_.second*b[_.first];});
+	return accumulate(all(a),0.0,[&](double c,auto _){return c+sqrt(_.se*b[_.fi]);});
 }
 
-void calculate(rule& x,vector<rule>& r,antecedent_weight& delta)
+void calculate(rule& x,vector<rule>& r,antecedent_weight& delta,rule_weight& w)
 {
-	antecedent_weight norm_delta(delta);
-	double max_delta=*max_element(delta.begin(),delta.end());
-	for_each(norm_delta.begin(),norm_delta.end(),[&](double& d){d/=max_delta;});
-	double wk,sum_wk;int k,j;
-	for(k=0,sum_wk=0.0;k<r.size();r[k].w=r[k].theta*wk,sum_wk+=r[k].w,k++)
-		for(j=0,wk=1.0;j<A.size();j++)
-			 wk*=pow(individual_match_degree(x.antecedent[j],r[k].antecedent[j]),norm_delta[j]);
-	for_each(r.begin(),r.end(),[&](rule& y){y.w/=sum_wk;});
+	antecedent_weight norm_delta(delta);double max_delta=*max_element(all(delta));
+	for_each(all(norm_delta),[&](double& d){d/=max_delta;});w.assign(r.size(),1.0);
+	rep(i,0,sz(r))rep(j,0,sz(A))w[i]*=pow(
+		individual_match_degree(x.antecedent[j],r[i].antecedent[j]),norm_delta[j]);
+	double sum_w=accumulate(all(w),0.0);
+	rep(i,0,sz(w))w[i]/=sum_w;
+	for_each(all(w),[&](double w){w/=sum_w;});
 }
 
-vector<double> evidential_reasoning(vector<rule>& r)
+belief_degress evidential_reasoning(vector<rule>& r,rule_weight& w)
 {
-	vector<double> beta(C.size());double N_m_D,N_m_D_,S_N_m;
-	for_each(r.begin(),r.end(),[](rule& x)
-	{
-		x.D=1.0-x.w*accumulate(x.consequent.begin(),x.consequent.end(),0.0,
-			[](double c,pair<int,double> _){return c+_.second;});
-	});
-	N_m_D=accumulate(r.begin(),r.end(),1.0,[](double c,rule& x){return c*x.D;});
-	N_m_D_=accumulate(r.begin(),r.end(),1.0,[](double c,rule& x){return c*(1.0-x.w);});
-	for(int j=0;j<C.size();j++)
-		beta[j]=(accumulate(r.begin(),r.end(),1.0,
-			[&](double c,rule& x){return c*(x.consequent[j]+x.D);}));
-	S_N_m=accumulate(beta.begin(),beta.end(),0.0);
-	for(int j=0;j<C.size();j++)
-		beta[j]=(beta[j]-N_m_D)/(S_N_m-((int)C.size()-1)*N_m_D-N_m_D_);
-	return beta;
+	double N_m_D(1.0),N_m_D_(1.0),S_N_m;
+	belief_degress B(C.size(),1.0),D(r.size(),1.0);
+	rep(i,0,sz(r))rep(j,0,sz(C))D[i]-=w[i]*r[i].consequent[j];
+	rep(i,0,sz(r))N_m_D*=D[i],N_m_D_*=1.0-w[i];
+	rep(j,0,sz(C))rep(i,0,sz(r))B[j]*=r[i].consequent[j]+D[i];
+	S_N_m=accumulate(all(B),0.0);
+	rep(j,0,sz(C))B[j]=(B[j]-N_m_D)/(S_N_m-(sz(C)-1)*N_m_D-N_m_D_);
+	return B;
 }
 
 double similarity(distribution& a,distribution& b)

@@ -20,16 +20,20 @@ Attribute ATTR;
 Referential CONS;
 AntecedentWeight DELTA;
 const double EPS = 1e-5;
+const double TEPS = 1e-4;
+const double AEPS = 1e-3;
 
 Distribution trans_form(Referential &r, double &a)
 {
 	int y = lower_bound(r.begin(), r.end(), a) - r.begin(), x = y - 1;
 	Distribution d;
-	if ((y == 0 && a < r[y]) || y == r.size())
+	if ((y == 0 && r[y] - a > TEPS) || (y == r.size() && a - r[x] > TEPS))
 	{
 	}
-	else if (a == r[y])
+	else if (y != r.size() && r[y] - a <= TEPS)
 		d[y] = 1.0;
+	else if (x != -1 && a - r[x] <= TEPS)
+		d[x] = 1.0;
 	else
 		d[x] = (r[y] - a) / (r[y] - r[x]),
 		d[y] = 1.0 - d[x];
@@ -59,8 +63,7 @@ struct Rule
 
 double match_individual(Distribution &a, Distribution b)
 {
-	double tmp = accumulate(a.begin(), a.end(), 0.0, [&](double c, auto _) { return c + sqrt(_.second * b[_.first]); });
-	return tmp;
+	return accumulate(a.begin(), a.end(), 0.0, [&](double c, auto _) { return c + sqrt(_.second * b[_.first]); });
 	/* 
 	set<int> s;
 	double d = 0.0;
@@ -70,8 +73,7 @@ double match_individual(Distribution &a, Distribution b)
 		s.insert(e.first);
 	for (auto &e : s)
 		d += (sqrt(a[e]) - sqrt(b[e])) * (sqrt(a[e]) - sqrt(b[e]));
-	return 1.0 - sqrt(d) / sqrt(2.0);
-	*/
+	return 1.0 - sqrt(d) / sqrt(2.0);*/
 }
 
 void normalize_delta()
@@ -80,7 +82,7 @@ void normalize_delta()
 	for_each(DELTA.begin(), DELTA.end(), [&](double &d) { d /= D; });
 }
 
-void activate_rule(Rule &x, vector<Rule> &r, int opt = 0, int opd = 0)
+void activate_rule(Rule &x, vector<Rule> &r, int opn = 1, int opt = 0, int opd = 0)
 {
 	for_each(r.begin(), r.end(), [&](Rule &y) {
 		y.w = opt ? y.t : 1.0;
@@ -88,7 +90,7 @@ void activate_rule(Rule &x, vector<Rule> &r, int opt = 0, int opd = 0)
 					  [&](auto d, double _) { y.w*=opd?pow(_,*d):_;return ++d; },
 					  [](auto &xa, auto &ya) { return match_individual(xa, ya); }); });
 	double W = accumulate(r.begin(), r.end(), 0.0, [](double c, auto &y) { return c + y.w; });
-	for_each(r.begin(), r.end(), [&](Rule &y) { y.w /= W; });
+	for_each(r.begin(), r.end(), [&](Rule &y) { y.w /= opn ? W : 1.0; });
 }
 
 BeliefDistribution evidential_reasoning(vector<Rule> &r)
@@ -138,36 +140,83 @@ void calculate_consistency(vector<Rule> &r)
 {
 }
 
+struct kd
+{
+	Rule r;
+	int ch[2];
+	Antecedent a[2];
+};
+
+void Min(Antecedent &o, Antecedent &u)
+{
+	for (int i = 0; i < ATTR.size(); i++)
+	{
+		if (o[i].begin()->first > u[i].begin()->first)
+			o[i] = u[i];
+	}
+}
+
+void Max(Antecedent &o, Antecedent &u)
+{
+	for (int i = 0; i < ATTR.size(); i++)
+	{
+		if (o[i].rbegin()->first < u[i].rbegin()->first)
+			o[i] = u[i];
+	}
+}
+
+int build(vector<kd> &T, int l, int r, int o)
+{
+	if (l > r)
+		return -1;
+	int m = (l + r) / 2;
+	nth_element(T.begin() + l, T.begin() + m, T.begin() + r + 1,
+				[&o](kd &x, kd &y) { return x.r.raw_a[o] < y.r.raw_a[o]; });
+	T[m].ch[0] = build(T, l, m - 1, o ^ 1), T[m].ch[1] = build(T, m + 1, r, o ^ 1);
+	if (~T[m].ch[0])
+		Min(T[m].a[0], T[T[m].ch[0]].a[0]), Max(T[m].a[1], T[T[m].ch[0]].a[1]);
+	if (~T[m].ch[1])
+		Min(T[m].a[0], T[T[m].ch[1]].a[0]), Max(T[m].a[1], T[T[m].ch[1]].a[1]);
+	return m;
+}
+
 int main()
 {
 	ios::sync_with_stdio(0), cout.setf(ios::fixed), cout.precision(3);
-	ATTR = {{-10.0, -8.0, -6.0, -4.0, -2.0, 0.0, 2.0},
-			{-0.02, -0.01, 0.0, 0.01, 0.02, 0.03, 0.04}};
-	CONS = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
-	DELTA = {1.0, 1.0};
-	ifstream I("../data/oil_testdata_2007.txt");
+
+	ATTR = {{},
+			{}};
+	CONS = {0.0, 1.0};
+
+	DELTA.resize(ATTR.size(), 1.0);
+	ifstream Itrain("../data/titanic/train_rev.txt");
+	ifstream Itest("../data/titanic/test_rev.txt");
 	ofstream O("result");
-	double fd, pd, ls;
-	double e, mse(0.0);
-	vector<Rule> r, train, test, tmp;
 	BeliefDistribution beta;
-	while (I >> fd >> pd >> ls)
-		r.push_back({{fd, pd}, ls});
-	random_shuffle(r.begin(), r.end());
-	train.assign(r.begin(), r.begin() + 1500);
-	test.assign(r.begin() + 1500, r.end());
+	vector<Rule> train, test;
+
+	double survived, pclass, age, sib, par;
+	string sex, emb;
+
+	while (cin >> survived >> pclass >> sex >> age >> sib >> par >> emb)
+	{
+	}
+
 	for_each(test.begin(), test.end(), [&](Rule &x) {
-		activate_rule(x, train);
-		//tmp.clear(), tmp.reserve(train.size());
-		//copy_if(train.begin(), train.end(), back_inserter(tmp), [](Rule &y) { return y.w > EPS; });
-		//de(tmp.size());
-		//de(tmp[0].w);
-		beta = evidential_reasoning(train);
-		//for (int i = 0; i < CONS.size(); i++)
-		//	cout << "[" << CONS[i] << "]" << beta[i] << endl;
+		activate_rule(x, train, 0);
+		tmp.clear();
+		for_each(train.begin(), train.end(), [&tmp](Rule &y) {
+			if (y.w > EPS)
+				tmp.push_back(y);
+		});
+
+		activate_rule(x, tmp);
+		beta = evidential_reasoning(tmp);
 		e = output_result(beta);
 		mse += (x.raw_c - e) * (x.raw_c - e);
+		mae += fabs(x.raw_c - e);
 		O << x.raw_a[0] << " " << x.raw_a[1] << " " << x.raw_c << " " << e << endl;
 	});
-	cout << mse / test.size() << endl;
+	cout << "mse_sum: " << mse / test.size() << endl;
+	cout << "mae_sum: " << mae / test.size() << endl;
 }

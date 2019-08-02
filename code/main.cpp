@@ -63,7 +63,8 @@ struct Rule
 
 double match_individual(Distribution &a, Distribution b)
 {
-	return accumulate(a.begin(), a.end(), 0.0, [&](double c, auto _) { return c + sqrt(_.second * b[_.first]); });
+	return 1.0 - sqrt(1.0 - accumulate(a.begin(), a.end(), 0.0,
+									   [&](double c, auto _) { return c + sqrt(_.second * b[_.first]); }));
 	/* 
 	set<int> s;
 	double d = 0.0;
@@ -140,78 +141,28 @@ void calculate_consistency(vector<Rule> &r)
 {
 }
 
-struct kd
-{
-	Rule r;
-	int ch[2];
-	Antecedent a[2];
-};
-
-void Min(Antecedent &o, Antecedent &u)
-{
-	for (int i = 0; i < ATTR.size(); i++)
-	{
-		if (o[i].begin()->first > u[i].begin()->first)
-			o[i] = u[i];
-	}
-}
-
-void Max(Antecedent &o, Antecedent &u)
-{
-	for (int i = 0; i < ATTR.size(); i++)
-	{
-		if (o[i].rbegin()->first < u[i].rbegin()->first)
-			o[i] = u[i];
-	}
-}
-
-int build(vector<kd> &T, int l, int r, int o)
-{
-	if (l > r)
-		return -1;
-	int m = (l + r) / 2;
-	nth_element(T.begin() + l, T.begin() + m, T.begin() + r + 1,
-				[&o](kd &x, kd &y) { return x.r.raw_a[o] < y.r.raw_a[o]; });
-	T[m].ch[0] = build(T, l, m - 1, o ^ 1), T[m].ch[1] = build(T, m + 1, r, o ^ 1);
-	if (~T[m].ch[0])
-		Min(T[m].a[0], T[T[m].ch[0]].a[0]), Max(T[m].a[1], T[T[m].ch[0]].a[1]);
-	if (~T[m].ch[1])
-		Min(T[m].a[0], T[T[m].ch[1]].a[0]), Max(T[m].a[1], T[T[m].ch[1]].a[1]);
-	return m;
-}
-
 int main()
 {
 	ios::sync_with_stdio(0), cout.setf(ios::fixed), cout.precision(3);
 
-	ATTR = {{},
-			{}};
-	CONS = {0.0, 1.0};
+	ATTR = {{-11, -6, -3, -1, 0, 1, 2, 3},
+			{-0.061, -0.005, -0.002, 0.000, 0.005, 0.010, 0.060}};
+	CONS = {0, 2, 4, 6, 8};
 
 	DELTA.resize(ATTR.size(), 1.0);
-	ifstream Itrain("../data/titanic/train_rev.txt");
-	ifstream Itest("../data/titanic/test_rev.txt");
+	ifstream I("../data/oil_rev.txt");
 	ofstream O("result");
 	BeliefDistribution beta;
-	vector<Rule> train, test;
-
-	double survived, pclass, age, sib, par;
-	string sex, emb;
-
-	while (cin >> survived >> pclass >> sex >> age >> sib >> par >> emb)
-	{
-	}
-
+	vector<Rule> r, train, test;
+	double fd, pd, ls;
+	double e, mae, mse;
+	while (I >> fd >> pd >> ls)
+		r.push_back(Rule({fd, pd}, ls));
+	train.assign(r.begin(), r.begin() + 1500);
+	test.assign(r.begin() + 1500, r.end());
 	for_each(test.begin(), test.end(), [&](Rule &x) {
-		activate_rule(x, train, 0);
-		tmp.clear();
-		for_each(train.begin(), train.end(), [&tmp](Rule &y) {
-			if (y.w > EPS)
-				tmp.push_back(y);
-		});
-
-		activate_rule(x, tmp);
-		beta = evidential_reasoning(tmp);
+		activate_rule(x, train);
+		beta = evidential_reasoning(train);
 		e = output_result(beta);
 		mse += (x.raw_c - e) * (x.raw_c - e);
 		mae += fabs(x.raw_c - e);

@@ -8,7 +8,7 @@ class Rule:
         self.ant = trans(a)
         self.con = [0.0]*len(results)
         self.con[results.index(c)] = 1.0
-        self.rwei, self.awei, self.uwei = 0.0, 0.0, 0.0
+        self.rw, self.aw, self.uw = 0.0, 0.0, 0.0
 
 
 def trans(a):  # raw data transform into belief structure
@@ -44,32 +44,32 @@ def arw(rules):  # assign rule weight
                 incon[i] -= math.exp(-sra*sra*(sra/src-1.0)*(sra/src-1.0))
     sigincon = sum(incon)
     for i in range(len(rules)):
-        rules[i].rwei = 1.0 if sigincon == 0.0 else 1.0 - incon[i]/sigincon
+        rules[i].rw = 1.0 if sigincon == 0.0 else 1.0 - incon[i]/sigincon
 
 
 def caw(r, rules):  # calculate activate weight
     sw = 0.0
     for rule in rules:
-        rule.awei = functools.reduce(operator.mul, [simi(
-            r.ant[i], rule.ant[i]) for i in range(len(attributes))], rule.rwei)
-        sw += rule.awei
+        rule.aw = functools.reduce(operator.mul, [simi(
+            r.ant[i], rule.ant[i]) for i in range(len(attributes))], rule.rw)
+        sw += rule.aw
     for rule in rules:
-        rule.awei /= sw
+        rule.aw /= sw
 
 
 def er(rules):  # evidential reasoning
     B = [0.0] * len(results)
-    D = functools.reduce(operator.mul, [1.0-r.awei for r in rules], 1.0)
+    D = functools.reduce(operator.mul, [1.0-r.aw for r in rules], 1.0)
     for k in range(len(results)):
         B[k] = functools.reduce(
-            operator.mul, [r.con[k]+1.0-r.awei for r in rules], 1.0)
+            operator.mul, [r.aw*r.con[k]+1.0-r.aw for r in rules], 1.0)
     S = sum(B[k])
     for k in range(len(results)):
         B[k] = (B[k]-D)/(S-len(results)*D)
     return B
 
 
-def adacost():
+def adacost(rules):
     pass
 
 

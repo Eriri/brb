@@ -4,23 +4,25 @@ import operator
 
 
 class Rule:
-    def __init__(self, a, c, att, res):
-        self.ant = trans(a, att)
-        self.con = [0.0]*len(res)
-        self.con[res.index(c)] = 1.0
+    def __init__(self, a, c):
+        self.ant = trans(a)
+        self.con = [0.0]*len(results)
+        self.con[results.index(c)] = 1.0
         self.rwei, self.awei, self.uwei = 0.0, 0.0, 0.0
 
 
-def trans(a, att):  # raw data to belief structure
-    t = [[0.0]*len(x) for x in att]
-    for i in range(len(att)):
-        if a[i] in att[i]:
-            t[i][att[i].index(a[i])] = 1
+def trans(a):  # raw data transform into belief structure
+    t = [[0.0]*len(x) for x in attributes]
+    for i in range(len(attributes)):
+        if a[i] in attributes[i]:
+            t[i][attributes[i].index(a[i])] = 1
         else:
-            for j in range(len(att[i])-1):
-                if att[i][j] < a[i] and a[i] < att[i][j+1]:
-                    t[i][j] = (att[i][j+1] - a[i]) / (att[i][j+1] - att[i][j])
-                    t[i][j+1] = (a[i] - att[i][j]) / (att[i][j+1] - att[i][j])
+            for j in range(len(attributes[i])-1):
+                if attributes[i][j] < a[i] and a[i] < attributes[i][j+1]:
+                    t[i][j] = (attributes[i][j+1] - a[i]) / \
+                        (attributes[i][j+1] - attributes[i][j])
+                    t[i][j+1] = (a[i] - attributes[i][j]) / \
+                        (attributes[i][j+1] - attributes[i][j])
                     break
     return t
 
@@ -56,15 +58,27 @@ def caw(r, rules):  # calculate activate weight
 
 
 def er(rules):  # evidential reasoning
-    for rule in rules:
+    B = [0.0] * len(results)
+    D = functools.reduce(operator.mul, [1.0-r.awei for r in rules], 1.0)
+    for k in range(len(results)):
+        B[k] = functools.reduce(
+            operator.mul, [r.con[k]+1.0-r.awei for r in rules], 1.0)
+    S = sum(B[k])
+    for k in range(len(results)):
+        B[k] = (B[k]-D)/(S-len(results)*D)
+    return B
+
+
+def adacost():
+    pass
 
 
 if __name__ == "__main__":
-    f = open('glass/Testdata_214.txt')
+    f = open('Testdata_214.txt')
     data = [x.split() for x in f.readlines()]
     data = [list(map(float, x)) for x in data]
     global attributes, results
     attributes = [[min(x)+y*(max(x)-min(x))/4 for y in range(5)]
                   for x in zip(*data)][:-1]
     results = [0, 1, 2, 3, 4, 5, 6]
-    rules = [Rule(x[:-1], x[-1], attributes, results) for x in data]
+    rules = [Rule(x[:-1], x[-1]) for x in data]

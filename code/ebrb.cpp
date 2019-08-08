@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
+struct Rule
+
+    int
+    main()
 {
 }

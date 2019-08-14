@@ -12,16 +12,16 @@ def ReadData(filename):
 
 
 @cuda.jit
-def ActivateWeight(ant, r, one, wei, att, ent, st):
+def ActivateWeight(ant, r, one, wei, attn, entn, st):
     x = cuda.threadIdx.x
     y = cuda.threadIdx.y
     i = cuda.threadIdx.y + cuda.blockDim.y*cuda.blockIdx.x
-    if x < att and y < ent:
+    if x < attn and y < entn:
         st[y][x] = exp(-(ant[i][x]-r[x])/one[x])
     cuda.syncthreads()
-    z = att - 1
+    z = attn - 1
     while z != 0:
-        if x <= z and x > z >> 1 and x < att and y < ent:
+        if x <= z and x > z >> 1 and x < attn and y < entn:
             st[y][z >> 1] *= st[y][z]
         z >>= 1
         cuda.syncthreads()
@@ -30,9 +30,9 @@ def ActivateWeight(ant, r, one, wei, att, ent, st):
 
 
 @cuda.jit
-def NormWeight(wei, sum):
+def NormWeight(wei, sw):
     x = cuda.threadIdx.x + cuda.blockDim.x * cuda.blockIdx.x
-    wei[x] /= sum
+    wei[x] /= sw
 
 
 @cuda.jit
@@ -45,21 +45,34 @@ def ProbabilityMass(wei, con, lev, dlt, ent, mass):
             (erf(rs/sqrt(2.0)) - erf(ls/sqrt(2.0))) / (1.0 - wei[x])
 
 
-def EvidentialReasonging():
+def EvidentialReasonging(ant, con, r, one, wei, les, attn, entn, threadshape, blockshape, st):
+    ActivateWeight[blockshape, threadshape](ant, r, one, wei, attn, entn, st)
+    sw = gpu_add(wei)
+    NormWeight(wei, sw)
 
 
 @cuda.reduce
-def gpu_prod(a, b):
+def gpu_mul(a, b):
     return a * b
 
 
 @cuda.reduce
-def gpu_sum(a, b):
+def gpu_add(a, b):
     return a + b
 
 
 def main():
     ant, con = ReadData("oil_rev.txt")
+    entn, attn = ant.shape
+    attx, entx = 1, 1
+    while attx < attn:
+        attx <<= 1
+    while entx * (1024 / attx) < entn:
+        entx <<= 1
+    threadshape = (attx, 1024 / attx)
+    blockshape = (entx, 1)
+    weight = cuda.arra
+    st = cuda.shared.array(threadshape, np.float64)
 
 
 if __name__ == "__main__":

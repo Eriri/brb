@@ -91,3 +91,5 @@ $k=[\sum_{j=1}^N\prod_{i=1}^L(m_{j,i}+m_{D,i})-(N-1)\prod_{i=1}^Lm_{D,i}]^{-1}$
 $\beta_j=\frac{m_j}{1-\overline{m}_D}=\frac{\prod_{i=1}^L(m_{j,i}+m_{D,i})-\prod_{i=1}^Lm_{D,i}}{\sum_{j=1}^N\prod_{i=1}^L(m_{j,i}+m_{D,i})-(N-1)\prod_{i=1}^Lm_{D,i}-\prod_{i=1}^L\overline{m}_{D,i}}$
 
 $\beta_D=\frac{\widetilde{m}_D}{1-\overline{m}_D}=\frac{\prod_{i=1}^Lm_{D,i}-\prod_{i=1}^L\overline{m}_{D,i}}{\sum_{j=1}^N\prod_{i=1}^L(m_{j,i}+m_{D,i})-(N-1)\prod_{i=1}^Lm_{D,i}-\prod_{i=1}^L\overline{m}_{D,i}}$
+
+$\beta_j=\frac{\prod_{i=1}^{L}(\frac{m_{j,i}}{m_{D,i}}+1)-1}{\sum_{j=1}^{N}\prod_{i=1}^{L}(\frac{m_{j,i}}{m_{D,i}}+1)-(N-1)-\prod_{i=1}^{L}\frac{\overline{m}_{D,i}}{m_{D,i}}}$

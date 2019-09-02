@@ -1,7 +1,7 @@
 import numpy as np
 import numba as nb
 from math import exp, sqrt, erf
-from numba import cuda, jit
+from numba import cuda, jit, njit
 
 
 def ReadData(filename):
@@ -10,7 +10,7 @@ def ReadData(filename):
         e = list(map(float, i.split()))
         ant.append(e[:-1]), con.append(e[-1])
     ant, con = np.array(ant), np.array(con)
-    one, dlt = np.ptp(ant, axis=0) * 0.1, np.ptp(con) * 0.1
+    one, dlt = np.ptp(ant, axis=0) * 0.01, np.ptp(con) * 0.1
     les = np.linspace(np.min(con), np.max(con), 10)
     stm = np.min(ant, axis=0)
     return ant, one, con, les, dlt, stm
@@ -36,7 +36,7 @@ def ActivateWeight(ant, r, one, wei, attn, entn):
     i = cuda.threadIdx.y + cuda.blockDim.y*cuda.blockIdx.x
     st = cuda.shared.array(threadshape, nb.float64)
     if x < attn and y < entn:
-        st[x][y] = exp(-(ant[i][x]-r[x])/one[x])
+        st[x][y] = exp(-abs(ant[i][x]-r[x])/one[x])
     cuda.syncthreads()
     z = attn - 1
     while z != 0:
@@ -64,17 +64,18 @@ def ProbabilityMass(wei, con, lev, dlt, entn, mass):
         mass[x] = (wei[x] * (b - 1.0) + 1.0) / (1.0 - wei[x])
 
 
+@jit
 def EvidentialReasonging(ant, con, r, one, dlt, wei, mas, les, attn, entn):
     ActivateWeight[blockshape, threadshape](ant, r, one, wei, attn, entn)
     sw = gpu_add(wei)
     NormWeight[int(entx/attx), 1024](wei, sw)
     B = np.empty(les.shape)
-    for i in range(les.shape[0]):
+    for i in range(0, les.shape[0]):
         ProbabilityMass[int(entx/attx), 1024](wei, con, les[i], dlt, entn, mas)
-        B[i] = gpu_mul(mas)
+        B[i] = gpu_mul(mas, init=1.0)
     S = np.sum(B)-les.shape[0]
-    for i in range(les.shape[0]):
-        B[i] = (B[i] - 1.0)/S
+    for i in range(0, les.shape[0]):
+        B[i] = (B[i] - 1.0)/(S + 1e-6)
     return np.dot(les, B)
 
 
@@ -92,13 +93,20 @@ def main():
     blockshape = (entx, 1)
     weight = cuda.device_array((entn), np.float64)
     mass = cuda.device_array((entn), np.float)
-    for i in range(10):
-        for j in range(10):
-            r = np.array([stm[0] + i * one[0], stm[1] + j * one[1]])
-            o = EvidentialReasonging(ant, con, r, one, dlt,
-                                     weight, mass, les, attn, entn)
-            with open("result", "a") as f:
-                f.write(str(r[0])+" "+str(r[1])+" "+str(o)+"\n")
+    tmp = np.array(ant)
+    ant = cuda.to_device(ant)
+    con = cuda.to_device(con)
+    # weight = np.empty((entn), np.float64)
+    # mass = np.empty((entn), np.float64)
+    # o = EvidentialReasonging(ant, con, np.array(
+    #     [0.0, 0.0]), one, dlt, weight, mass, les, attn, entn)
+    # print(o)
+    f = open("result", "w")
+    for i in range(len(tmp)):
+        r = tmp[i]
+        o = EvidentialReasonging(ant, con, r, one, dlt,
+                                 weight, mass, les, attn, entn)
+        f.write(str(r[0])+" "+str(r[1])+" "+str(o)+"\n")
 
 
 if __name__ == "__main__":

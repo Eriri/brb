@@ -2,8 +2,9 @@
 using namespace std;
 
 struct Rule
+{
+};
 
-    int
-    main()
+int main()
 {
 }

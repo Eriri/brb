@@ -1,14 +1,6 @@
 import numpy as np
-from ADASYN import ADASYN
 from sklearn.model_selection import StratifiedKFold
-from sklearn.decomposition import PCA
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from imblearn.metrics import geometric_mean_score
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import ClusterCentroids
-from imblearn.combine import SMOTEENN
-from imblearn.combine import SMOTETomek
+from sklearn.metrics import accuracy_score
 from multiprocessing import Pool
 import tqdm
 
@@ -43,54 +35,6 @@ def EvidentialReasoing(ant, con, one, les, rw, a):
     s = np.sum(b)
     b = (b - 1)/(s - les.shape[0])
     return np.argmax(b)
-
-
-def GenerateBase(ant, con, one, les,  cnt, bn, lo):
-    skf = StratifiedKFold(n_splits=bn)
-    adsn = ADASYN(k=2, imb_threshold=0.6, ratio=0.5, verbose=False)
-    pb = tqdm.tqdm(total=cnt*bn, position=lo)
-    base = []
-    for base_mask, test_mask in skf.split(ant, con):
-        base_ant, base_con = ant[base_mask], con[base_mask]
-        test_ant, test_con = ant[test_mask], con[test_mask]
-        adsn.fit(base_ant, base_con)
-        good_ant = []
-        need_size = int(2.0 * np.sum(base_con == 0.0))
-        for i in range(cnt):
-            new_ant, new_con = adsn.oversample()
-            all_ant = np.concatenate([new_ant, base_ant[base_con == 1.0]])
-            all_con = np.concatenate([new_con, base_con[base_con == 1.0]])
-            new_size, rw = len(new_ant), np.ones((len(all_ant),))
-            for ta in test_ant[test_con == 1.0]:
-                if EvidentialReasoing(all_ant, all_con, one, les, 1.0, ta) != 1:
-                    tw = np.prod(np.exp(-np.abs((all_ant-ta)/one)), axis=1)
-                    rw[:new_size][tw[:new_size] > np.max(tw[:new_size])] = 0
-            good_ant.append(new_ant[rw[:new_size] == 1])
-            pb.update()
-        good_ant = np.concatenate(good_ant)
-        need_size = min(need_size, len(good_ant))
-        best = 0.0
-        for i in range(cnt):
-            np.random.shuffle(good_ant)
-            all_ant = np.concatenate([base_ant, good_ant[:need_size]])
-            all_con = np.concatenate([base_con, np.zeros((need_size,))])
-            fs = f1_score(1.0-test_con, 1.0-Evaluating(
-                [[all_ant, all_con, 1.0]], test_ant, one, les))
-            if best < fs:
-                best, best_ant, best_con = fs, all_ant, all_con
-        base.append([best_ant, best_con, 1.0])
-    pb.close()
-    return base
-
-
-def Evaluating(base, test_ant, one, les, p=0):
-    test_con = []
-    for ta in test_ant:
-        tc = [0, 0]
-        for base_ant, base_con, rw in base:
-            tc[EvidentialReasoing(base_ant, base_con, one, les, rw, ta)] += 1
-        test_con.append(tc.index(max(tc)))
-    return np.array(test_con)
 
 
 def Ebrb(ant, con, one, les, mask):

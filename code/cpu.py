@@ -35,18 +35,19 @@ def EvidentialReasoing(ant, con, a):
     return (b - 1)/(np.sum(b) - len(les))
 
 
-def StochasticGradientDescent(ba, bc, ta, tc, oi, cnt):
-    for _ in range(cnt):
+def GradientDescent(ba, bc, ta, tc, oi, bs):
+    bi = np.arange(len(ta)-len(ta) % bs)
+    np.random.shuffle(bi)
+    for bm in np.split(bi, bs):
+        for a, c in zip(ta[bm], tc[bm]):
+            w = np.prod(np.exp(-0.5*(ba-a)*(ba-a)/one/one), axis=1)
 
-        pc = np.array([EvidentialReasoing(ba, bc, a) for a in ta])
-        error = 0.5 * (tc - pc)*(tc - pc)
-        print(error)
+    pc = np.array([EvidentialReasoing(ba, bc, a) for a in ta])
+    error = 0.5 * (tc - pc)*(tc - pc)
 
 
 def main():
     ant, con = ReadData("../data/iris.data", ',')
-    print(ant, con)
-    print(les, one)
 
 
 if __name__ == "__main__":

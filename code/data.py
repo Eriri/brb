@@ -1,10 +1,13 @@
-import pandas as pd
 
-df = pd.read_csv("../data/titanic/test.csv", header=0)
-df = df.drop(columns=['PassengerId', 'Name', 'Ticket', 'Fare', 'Cabin'])
+a = open('../data/iris.data', 'r')
+b = open('../data/iris_rev.data', 'w')
+c = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
 
-f = open("../data/titanic/test_rev.txt", "w")
+for i in a:
+    e = i.strip().split(',')
+    e[-1] = str(c.index(e[-1]))
+    e = ' '.join(e)
+    b.write(e+'\n')
+    print(e)
 
-for i, d in df.iterrows():
-    f.write(str(d["Pclass"])+" "+str(d["Sex"])+" " +
-            str(d["Age"])+" "+str(d["SibSp"])+" "+str(d["Parch"])+" "+str(d["Embarked"])+"\n")
+b.close()

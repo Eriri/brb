@@ -25,8 +25,8 @@ def ReadData(filename, sep=None):
     return np.array(ant), np.array(con)
 
 
-def EvidentialReasoing(ant, con, a):
-    w = np.prod(np.exp(-0.5*(ant-a)*(ant-a)/one/one), axis=1)
+def EvidentialReasoing(ant, con, a, rw=1.0):
+    w = np.prod(np.exp(-0.5*(ant-a)*(ant-a)/one/one), axis=1)*rw
     sw, b = np.sum(w), np.random.uniform(size=len(les))
     if np.max(w) == sw:
         return [b/np.sum(b), con[np.argmax(w)]][sw != 0.0]

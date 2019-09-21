@@ -1,7 +1,7 @@
 
-a = open('../data/iris.data', 'r')
-b = open('../data/iris_rev.data', 'w')
-c = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
+a = open('../data/haberman.data', 'r')
+b = open('../data/haberman_rev.data', 'w')
+c = ['1', '2']
 
 for i in a:
     e = i.strip().split(',')

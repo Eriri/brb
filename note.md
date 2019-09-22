@@ -113,7 +113,7 @@ $\nabla_x F=\sum_{i=1}^{batchsize}\sum_{j=1}^N[(\beta_{j,i}^{predict}-\beta_{j,i
 
 ___
 
-$\frac{d\overline{\beta}_j}{d\beta_{j,t}}=\frac{\theta_j\alpha_j}{\sum_{k\neq j}\theta_k\alpha_k}\prod_{i=1,i\neq j}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}\theta_k\alpha_k}+1),\frac{d\overline{\beta}_{k\neq j}}{d\beta_{j,t}}=\frac{d\overline{\beta}_j}{d\beta_{k\neq j,t}}=0$
+$\frac{d\overline{\beta}_j}{d\beta_{j,t}}=\frac{\theta_t\alpha_t}{\sum_{k\neq j}\theta_k\alpha_k}\prod_{i=1,i\neq t}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq j}\theta_k\alpha_k}+1),\frac{d\overline{\beta}_{k\neq j}}{d\beta_{j,t}}=\frac{d\overline{\beta}_j}{d\beta_{k\neq j,t}}=0$
 
 $\beta_{j,t}=\frac{e^{y_{j,t}}}{\sum_{k=1}^Ne^{y_{k,t}}},\frac{d\beta_{j,t}}{dy_{j,t}}=\frac{e^{y_{j,t}}\sum_{k=1,k\neq j}^Ne^{y_{k,t}}}{(\sum_{k=1}^Ne^{y_{k,t}})^2}$
 

@@ -1,7 +1,7 @@
 
-a = open('../data/haberman.data', 'r')
-b = open('../data/haberman_rev.data', 'w')
-c = ['1', '2']
+a = open('../data/glass.data', 'r')
+b = open('../data/glass_rev.data', 'w')
+c = ['1', '2', '3', '5', '6', '7']
 
 for i in a:
     e = i.strip().split(',')

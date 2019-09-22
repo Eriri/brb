@@ -96,20 +96,38 @@ $\beta_j=\frac{\prod_{i=1}^{L}(\frac{m_{j,i}}{m_{D,i}}+1)-1}{\sum_{j=1}^{N}\prod
 
 $\beta_j=\frac{\prod_{i=1}^{L}(\frac{w_i\beta_{j,i}}{1-w_i}+1)-1}{\sum_{j=1}^{N}\prod_{i=1}^{L}(\frac{w_i\beta_{j,i}}{1-w_i}+1)-N}=\frac{\prod_{i=1}^{L}(\frac{\beta_{j,i}}{\frac{1}{w_i}-1}+1)-1}{\sum_{j=1}^{N}\prod_{i=1}^{L}(\frac{\beta_{j,i}}{\frac{1}{w_i}-1}+1)-N}=\frac{\prod_{i=1}^{L}(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)-1}{\sum_{j=1}^{N}\prod_{i=1}^{L}(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)-N}$
 
-$\alpha_t=\prod_{i=1}^Te^{-\frac{(x_i-x_i^t)^2}{2\delta_i^2}}=e^{-\sum_{i=1}^T\frac{(x_i-x_i^t)^2}{2\delta_i^2}}$
+$\beta_j=\frac{\overline{\beta}_j}{\sum_{i=1}^N\overline{\beta}_i},\overline{\beta}_j=\prod_{i=1}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)-1,\frac{d\beta_j}{d\overline{\beta}_j}=\frac{\sum_{i=1,i\neq j}^N\overline{\beta}_i}{(\sum_{i=1}^N\overline{\beta}_i)^2}$
 
-$\beta_j=\frac{\overline{\beta}_j}{\sum_{i=1}^N\overline{\beta}_i},\overline{\beta}_j=\prod_{i=1}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)-1$
+&nbsp;
 
-$\frac{d\beta_j}{d\overline{\beta}_j}=\frac{\sum_{i=1,i\neq j}^N\overline{\beta}_i}{(\sum_{i=1}^N\overline{\beta}_i)^2}$
+$minimize[F=\frac{1}{2\times batchsize}\sum_{i=1}^{batchsize}\sum_{j=1}^N(\beta_{j,i}^{predict}-\beta_{j,i})^2]$
+___
 
 $\frac{d\overline{\beta}_j}{d\alpha_t}=\frac{\theta_t\beta_{j,t}}{\sum_{k\neq t}\theta_k\alpha_k}\prod_{i=1,i\neq t}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)+\sum_{l=1,l\neq t}^L(-\frac{\theta_l\alpha_l\beta_{j,l}\theta_t}{(\sum_{k\neq l}\theta_k\alpha_k)^2}\prod_{i=1.i\neq l}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1))$
 
-$\frac{d\alpha_t}{dx_j^t}=\frac{x_j-x_j^t}{\delta_j^2}e^{-\sum_{i=1}^T\frac{(x_i-x_i^t)^2}{2\delta_i^2}}$
+$\alpha_t=\prod_{i=1}^Te^{-\frac{(x_i-x_i^t)^2}{2\delta_i^2}}=e^{-\sum_{i=1}^T\frac{(x_i-x_i^t)^2}{2\delta_i^2}},\frac{d\alpha_t}{dx_j^t}=\frac{x_j-x_j^t}{\delta_j^2}e^{-\sum_{i=1}^T\frac{(x_i-x_i^t)^2}{2\delta_i^2}}$
 
 $\frac{d\beta_j}{dx_j}=\frac{d\beta_j}{d\overline{\beta}_j}\frac{d\overline{\beta}_j}{d\alpha_t}\frac{d\alpha_t}{dx_j^t}$
 
-$F=\frac{1}{2\times batchsize}\sum_{i=1}^{batchsize}\sum_{j=1}^N(\beta_{j,i}^{predict}-\beta_{j,i})^2$
+$\nabla_x F=\sum_{i=1}^{batchsize}\sum_{j=1}^N[(\beta_{j,i}^{predict}-\beta_{j,i})\frac{d\beta_{j,i}^{predict}}{dx}]/batchsize,x_{t+1}=x_t-\mu\nabla_{x_t} F$
 
-$\nabla_x F=\sum_{i=1}^{batchsize}\sum_{j=1}^N[(\beta_{j,i}^{predict}-\beta_{j,i})\frac{d\beta_{j,i}^{predict}}{dx}]/batchsize$
+___
 
-$x_{t+1}=x_t-\mu\nabla_{x_t} F$
+$\frac{d\overline{\beta}_j}{d\beta_{j,t}}=\frac{\theta_j\alpha_j}{\sum_{k\neq j}\theta_k\alpha_k}\prod_{i=1,i\neq j}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}\theta_k\alpha_k}+1),\frac{d\overline{\beta}_{k\neq j}}{d\beta_{j,t}}=\frac{d\overline{\beta}_j}{d\beta_{k\neq j,t}}=0$
+
+$\beta_{j,t}=\frac{e^{y_{j,t}}}{\sum_{k=1}^Ne^{y_{k,t}}},\frac{d\beta_{j,t}}{dy_{j,t}}=\frac{e^{y_{j,t}}\sum_{k=1,k\neq j}^Ne^{y_{k,t}}}{(\sum_{k=1}^Ne^{y_{k,t}})^2}$
+
+$\frac{d\beta_j}{dy_{j,t}}=\frac{d\beta_j}{d\overline{\beta}_j}\frac{d\overline{\beta}_j}{d\beta_{j,t}}\frac{d\beta_{j,t}}{dy_{j,t}}$
+
+$\nabla_yF=\sum_{i=1}^{batchsize}\sum_{j=1}^N[(\beta_{j,i}^{predict}-\beta_{j,i})\frac{d\beta_{j,i}^{predict}}{dy_t}]/batchsize,y_{t+1}=y_t-\mu\nabla_{y_t}F$
+
+___
+
+
+$\frac{d\overline{\beta_j}}{d\theta_t}=\frac{\alpha_t\beta_{j,t}}{\sum_{k\neq t}\theta_k\alpha_k}\prod_{i=1,i\neq t}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)+\sum_{l=1,l\neq t}^L(-\frac{\theta_l\alpha_l\beta_{j,l}\alpha_t}{(\sum_{k\neq l}\theta_k\alpha_k)^2}\prod_{i=1.i\neq l}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1))$
+
+$\theta_t=\frac{1}{1+e^{-z_t}},\frac{d\theta_t}{dz_t}=\frac{e^{-z_t}}{(1+e^{-z_t})^2}=\theta_t\times(1-\theta_t)$
+
+$\frac{d\beta_j}{dz_t}=\frac{d\beta_j}{d\overline{\beta}_j}\frac{d\overline{\beta}_j}{d\theta_t}\frac{d\theta_t}{dz_t}$
+
+$\nabla_zF=\sum_{i=1}^{batchsize}\sum_{j=1}^N[(\beta_{j,i}^{predict}-\beta_{j,i})\frac{d\beta_{j,i}^{predict}}{dz_t}]/batchsize,z_{t+1}=z_t-\mu\nabla_{z_t}F$

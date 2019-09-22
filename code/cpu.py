@@ -26,8 +26,8 @@ def ReadData(filename):
     return np.array(ant), np.array(con)
 
 
-def EvidentialReasoing(a, ant, con):
-    w = np.exp(-0.5 * np.sum((ant-a)*(ant-a)/(one*one), axis=1))
+def EvidentialReasoing(a, ant, con, rw):
+    w = np.exp(-0.5 * np.sum((ant-a)*(ant-a)/(one*one), axis=1)) * rw
     sw, b = np.sum(w), np.random.uniform(size=len(les))
     if np.max(w) == sw:
         return [b/np.sum(b), con[np.argmax(w)]][int(sw != 0.0)]
@@ -35,65 +35,64 @@ def EvidentialReasoing(a, ant, con):
     return b / np.sum(b)
 
 
-def Nabla(a, c, ba, bc, oi):
-    '''
-    oi = np.random.randint(0, len(ba))
-    p = Pool()
-    r = [p.apply_async(Nabla, (a, c, ba, bc, oi,)) for a, c in zip(ta[bm], tc[bm])]
-    p.close(), p.join()
-    n = mu * np.sum([res.get() for res in r], axis=0) / bs
-    ba[oi] -= mu * n / bs
-    '''
-    w = np.exp(- np.sum((ba-a)*(ba-a)/(one*one), axis=1) / 2)
-    sw = np.sum(w)
-    n = np.zeros(ba[oi].shape)
-    if np.max(w) == sw:
-        return n
-    bt = np.transpose(bc) * w / (sw - w) + 1
-    b = np.prod(bt, axis=1) - 1
-    pc = b / np.sum(b)
-    for j in range(len(les)):
-        d1 = (np.sum(b) - b[j]) / (np.sum(b) * np.sum(b))
-        bn = - np.transpose(bc)[j] * w / ((sw - w) * (sw - w)) * (np.prod(bt[j]) / bt[j])
-        bn[oi] = bc[oi][j] / (sw - w[oi]) * np.prod(bt[j]) / bt[j][oi]
-        d2 = np.sum(bn)
-        d3 = (a - ba[oi])/(one * one) * np.exp(-np.sum((a - ba[oi])*(a - ba[oi])/(one * one)) / 2)
-        n += (pc[j] - c[j]) * d1 * d2 * d3
-    return n
-
-
-def GradientDescent(ta, tc, bs, mu, ba, bc):
+def GradientDescent(ta, tc, bs, mu, ba, bc, bw):
     bi = np.arange(len(ta)-len(ta) % bs)
     np.random.shuffle(bi)
     pb = tqdm.tqdm(total=len(bi)/bs)
     for i, bm in enumerate(np.split(bi, len(bi)/bs)):
-        #oi  =np.random.randint(0, len(ba))
-        oi = i % len(ba)
-        n = np.zeros(ba[oi].shape)
+        t = i % len(ba)
+        nx = np.zeros(ba[t].shape)
+        ny = np.zeros(bc[t].shape)
+        nz = 0.0
         for a, c in zip(ta[bm], tc[bm]):
-            w = np.exp(- np.sum((ba-a)*(ba-a)/(one*one), axis=1) / 2)
+            theta = 1 / (1 + np.exp(-bw))  # (L)
+            alpha = np.exp(- np.sum((ba-a)*(ba-a)/(one*one), axis=1) / 2)  # (L)
+            w = alpha * theta  # (L)
             sw = np.sum(w)
             if np.max(w) == sw:
                 continue
-            bt = np.transpose(bc) * w / (sw - w) + 1
-            b = np.prod(bt, axis=1) - 1
-            pc = b / np.sum(b)
-            for j in range(len(les)):
-                d1 = (np.sum(b) - b[j]) / (np.sum(b) * np.sum(b))
-                bn = - np.transpose(bc)[j] * w / ((sw - w) * (sw - w)) * (np.prod(bt[j]) / bt[j])
-                bn[oi] = bc[oi][j] / (sw - w[oi]) * np.prod(bt[j]) / bt[j][oi]
-                d2 = np.sum(bn)
-                d3 = (a - ba[oi])/(one * one) * np.exp(-np.sum((a - ba[oi])*(a - ba[oi])/(one * one)) / 2)
-                n += (pc[j] - c[j]) * d1 * d2 * d3
-        ba[oi] -= mu * n / bs
+            B = np.transpose(np.exp(bc) / np.sum(np.exp(bc), axis=1)[:, None])  # (N,L)
+            Bi = B * w / (sw - w) + 1  # (N,L)
+            B_ = np.prod(Bi, axis=1) - 1  # (N)
+            pc = B_ / np.sum(B_)  # (N)
+            dBB_ = (np.sum(B_) - B_) / (np.sum(B_) * np.sum(B_))  # (N)
+
+            bn1 = - theta[t] * B * w / ((sw - w) * (sw - w)) * np.prod(Bi, axis=1) / Bi  # (N,L)
+            bn2 = theta[t] * B[:, t] / (sw - w[t]) * np.prod(Bi, axis=1) / Bi[:, t]  # (N)
+            dB_a = np.sum(np.sum(bn1, axis=1) - bn1[:, t] + bn2)
+            dax = (a - ba[t])/(one * one) * np.exp(-np.sum((a - ba[t])*(a - ba[t])/(one * one)) / 2)
+            nx += (pc - c) * dBB_ * dB_a * dax
+
+            dB_b = w / (sw - w) * np.prod(Bi, axis=1) / Bi
+            dby = np.exp(bc[t]) * (np.sum(np.exp(bc[t])) - np.exp(bc[t])) / (np.sum(np.exp(bc[t])) * np.sum(np.exp(bc[t])))
+            ny += (pc - c) * dBB_ * dB_b * dby
+
+            bn3 = - alpha[t] * B * w / ((sw - w) * (sw - w)) * np.prod(Bi) / Bi
+            bn4 = alpha[t] * B[:, t] / (sw - w[t]) * np.prod(Bi, axis=1) / Bi[:, t]
+            dB_t = np.sum(np.sum(bn3, axis=1) - bn3[:, t] + bn4)
+            dtz = theta[t] * (1.0 - theta[t])
+            nz += (pc - c) * dBB_ * dB_t * dtz
+
+        ba[t] -= mu * nx / bs
+        bc[t] -= mu * ny / bs
+        bw[t] -= mu * nz / bs
         pb.update()
     pb.close()
-    return ba, bc
+    return ba, bc, bw
+
+
+def Evaluating(ant, con, ba, bc, bw):
+    bc = np.exp(bc) / np.sum(np.exp(bc), axis=1)[:, None]
+    bw = 1 / (1 + np.exp(-bw))
+    pc = np.array([EvidentialReasoing(a, ba, bc, bw) for a in ant])
+    err = np.sum((con - pc)*(con - pc))
+    acc = accuracy_score(np.argmax(con, axis=1), np.argmax(pc, axis=1))
+    return acc, err
 
 
 def main():
     ant, con = ReadData("../data/Skin_NonSkin.txt")
-    cnt, bn, zc = 5000, 100, []
+    cnt, bn = 5000, 100
 
     skf = StratifiedKFold(10, True)
     for train_mask, test_mask in skf.split(ant, np.argmax(con, axis=1)):
@@ -104,31 +103,15 @@ def main():
         # print(accuracy_score(np.argmax(test_con, axis=1), np.argmax(pred_con, axis=1)))
 
         base_ant = np.random.uniform(low, high, (bn, ant.shape[1]))
-        base_con = []
+        base_con = np.random.uniform(-1.0, 1.0, (bn, con.shape[1]))
+        base_wei = np.random.uniform(-1.0, 1.0, (bn,))
         acc, err = [], []
-        for i in range(base_ant.shape[0]):
-            bc = np.zeros((train_con.shape[1],))
-            bc[i % len(les)] = 1.0
-            base_con.append(bc)
-        base_con = np.array(base_con)
-        # base_con /= np.sum(base_con, axis=1)[:, None]
         sc = 0.0
         for _ in range(cnt):
-            base_ant, base_con = GradientDescent(train_ant, train_con, 128, 1e7*(1-sc), base_ant, base_con)
-            pred_con = np.array([EvidentialReasoing(a, base_ant, base_con) for a in train_ant])
-            error = np.sum((pred_con - train_con) * (pred_con - train_con))
-            sc = accuracy_score(np.argmax(train_con, axis=1), np.argmax(pred_con, axis=1))
-            pt_con = np.array([EvidentialReasoing(a, base_ant, base_con) for a in test_ant])
-            pc = accuracy_score(np.argmax(test_con, axis=1), np.argmax(pt_con, axis=1))
-            print(_, error, sc, pc)
-            acc.append(sc), err.append(error)
-            if sc > 0.935:
-                break
-        pred_con = np.array([EvidentialReasoing(a, base_ant, base_con) for a in test_ant])
-        print(accuracy_score(np.argmax(test_con, axis=1), np.argmax(pred_con, axis=1)))
-        view.draw(acc, err)
-        zc.append(accuracy_score(np.argmax(test_con, axis=1), np.argmax(pred_con, axis=1)))
-    print(zc)
+            base_ant, base_con, base_wei = GradientDescent(train_ant, train_con, 128, 1e3*(1-sc), base_ant, base_con, base_wei)
+
+            a, e = Evaluating(train_ant, train_con, base_ant, base_con, base_wei)
+            a, e = Evaluating(test_ant, test_con, base_ant, base_con, base_wei)
 
 
 if __name__ == "__main__":

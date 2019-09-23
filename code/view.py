@@ -38,11 +38,16 @@ def draw(acc, err):
 def draw3d():
     fig = plt.figure()
     a = Axes3D(fig)
-
     ox, oy, oz = read("../data/Skin_NonSkin.txt", 1, 2500)
     a.scatter(ox, oy, oz, c='b')
-
     tx, ty, tz = read("../data/Skin_NonSkin.txt", 2, 2500)
     a.scatter(tx, ty, tz, c='r')
+    plt.show()
 
+
+def draw3d_compare(ox, oy, oz, tx, ty, tz):
+    fig = plt.figure()
+    a = Axes3D(fig)
+    a.scatter(ox, oy, oz, c='b')
+    a.scatter(tx, ty, tz, c='r')
     plt.show()

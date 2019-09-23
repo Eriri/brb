@@ -50,7 +50,19 @@ def EvidentialReasoing(a, ant, con, rw):
     return b / np.sum(b)
 
 
-def GradientDescent(ta, tc, bs, mua, muc, muw, ba, bc, bw):
+def AdamOptimize(ta, tc, ep, bs, ba, bc, bw):
+    # ba (L,T) bc (L,N) bw (L)
+    bi = np.arange(len(ta))
+    for epi in range(ep):
+        np.random.shuffle(bi)
+        for i in range(np.ceil(len(bi) / bs)):
+            ant, con = ta[bi[i*bs:i*bs+bs]], tc[bi[i*bs:i*bs+bs]]  # (bs,T) (bs,N)
+            nx, ny, nz = np.zeros(ba.shape), np.zeros(bc.shape), np.zeros(bw.shape)
+            theta = 1 / (1 + np.exp(-bw))  # (L)
+            alpha = np.exp(-np.sum((ant-ba)*(ant-ba)/one/one/2, axis=1))
+
+
+def GradientDescent(ta, tc, ep, bs, ba, bc, bw):
     bi = np.arange(len(ta)-len(ta) % bs)
     np.random.shuffle(bi)
     pb = tqdm.tqdm(total=len(bi)/bs)

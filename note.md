@@ -105,7 +105,7 @@ ___
 
 $\frac{d\overline{\beta}_j}{d\alpha_t}=\frac{\theta_t\beta_{j,t}}{\sum_{k\neq t}\theta_k\alpha_k}\prod_{i=1,i\neq t}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1)+\sum_{l=1,l\neq t}^L(-\frac{\theta_l\alpha_l\beta_{j,l}\theta_t}{(\sum_{k\neq l}\theta_k\alpha_k)^2}\prod_{i=1.i\neq l}^L(\frac{\theta_i\alpha_i\beta_{j,i}}{\sum_{k\neq i}{\theta_k\alpha_k}}+1))$
 
-$\alpha_t=\prod_{i=1}^Te^{-\frac{(x_i-x_i^t)^2}{2\delta_i^2}}=e^{-\sum_{i=1}^T\frac{(x_i-x_i^t)^2}{2\delta_i^2}},\frac{d\alpha_t}{dx_j^t}=\frac{x_j-x_j^t}{\delta_j^2}e^{-\sum_{i=1}^T\frac{(x_i-x_i^t)^2}{2\delta_i^2}}$
+$\alpha_t=\prod_{i=1}^Te^{-\frac{\tau_i}{2}(\frac{x_i-x_i^t}{\delta_i})^2}=e^{-\sum_{i=1}^T\frac{\tau_i}{2}(\frac{x_i-x_i^t}{\delta_i})^2},\frac{d\alpha_t}{dx_j^t}=\frac{\tau_j(x_j-x_j^t)}{\delta_j}e^{-\sum_{i=1}^T\frac{\tau_i}{2}(\frac{x_i-x_i^t}{\delta_i})^2},\frac{d\alpha_t}{d\tau_i}=$
 
 $\frac{d\beta_j}{dx_j}=\frac{d\beta_j}{d\overline{\beta}_j}\frac{d\overline{\beta}_j}{d\alpha_t}\frac{d\alpha_t}{dx_j^t}$
 

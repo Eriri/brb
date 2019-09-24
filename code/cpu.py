@@ -1,4 +1,8 @@
 import numpy as np
+from numpy import arange, array, zeros
+from numpy import exp, amin, amax, sum, ptp, square
+from numpy import argmax, prod, transpose, concatenate, split, expand_dims
+from numpy.random import uniform, shuffle
 from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.decomposition import PCA
 from sklearn.metrics import accuracy_score
@@ -7,11 +11,11 @@ import tqdm
 import time
 import view
 
-les, one, low, high = np.arange(8), np.array([]), np.array([]), np.array([])
+les, one, low, high, eps = arange(8), array([]), array([]), array([]), 1e-8
 
 
 def trans(t):
-    z = np.zeros((len(les),))
+    z = zeros((len(les),))
     for i in range(len(les)):
         if t == les[i]:
             z[i] = 1.0
@@ -30,36 +34,48 @@ def ReadData(filename):
             e = list(map(float, i.split()))
             ant.append(e[:-1]), con.append(e[-1])
     global one, les, low, high
-    # one, les = np.ptp(ant, axis=0) * 0.1, list(set(con))
-    one = np.ptp(ant, axis=0) * 0.1
-    low, high = np.min(ant, axis=0), np.max(ant, axis=0)
-    con = np.array([trans(x) for x in con])
-    # for i in range(len(con)):
-    # o = np.zeros((len(les),))
-    # o[les.index(con[i])] = 1.0
-    # con[i] = o
-    return np.array(ant), np.array(con)
+    one = ptp(ant, axis=0) * 0.1
+    low, high = amin(ant, axis=0), amax(ant, axis=0)
+    con = array([trans(x) for x in con])
+    return array(ant), array(con)
 
 
-def EvidentialReasoing(a, ant, con, rw):
-    w = np.exp(-0.5 * np.sum((ant-a)*(ant-a)/(one*one), axis=1)) * rw
-    sw, b = np.sum(w), np.random.uniform(size=len(les))
-    if np.max(w) == sw:
-        return [b/np.sum(b), con[np.argmax(w)]][int(sw != 0.0)]
-    b = np.prod(np.transpose(con) * w / (sw - w) + 1, axis=1) - 1
-    return b / np.sum(b)
+def EvidentialReasoing(a, ant, con, rw, tau):
+    w = exp(-0.5*sum(tau*(ant-a)*(ant-a)/one/one, axis=1))*rw
+    sw, b = sum(w), uniform(size=len(les))
+    if amax(w) == sw:
+        return [b/sum(b), con[argmax(w)]][int(sw != 0.0)]
+    b = prod(transpose(con)*w/(sw-w)+1, axis=1)-1
+    return b/sum(b)
 
 
-def AdamOptimize(ta, tc, ep, bs, ba, bc, bw):
+def AdamOptimize(ta, tc, ep, bs, ba, bc, bw, bt):
     # ba (L,T) bc (L,N) bw (L)
-    bi = np.arange(len(ta))
+    while len(ta) % bs != 0:
+        ta = concatenate((ta, ta[:len(ta) % bs]))
+        tc = concatenate((tc, tc[:len(tc) % bs]))
+    bi, bn = arange(len(ta)), len(ta)/bs
+    pb = tqdm.tqdm(total=bn)
     for epi in range(ep):
-        np.random.shuffle(bi)
-        for i in range(np.ceil(len(bi) / bs)):
-            ant, con = ta[bi[i*bs:i*bs+bs]], tc[bi[i*bs:i*bs+bs]]  # (bs,T) (bs,N)
-            nx, ny, nz = np.zeros(ba.shape), np.zeros(bc.shape), np.zeros(bw.shape)
-            theta = 1 / (1 + np.exp(-bw))  # (L)
-            alpha = np.exp(-np.sum((ant-ba)*(ant-ba)/one/one/2, axis=1))
+        shuffle(bi)
+        for mask in split(bi, len(bi)/bs):
+            ant, con = ta[bi[mask]], tc[bi[mask]]  # (bs,T) (bs,N)
+            nx, ny, nz = zeros(ba.shape), zeros(bc.shape), zeros(bw.shape)
+            theta, tau = 1/(1+exp(-bw)), 1/(1+exp(-bt))  # (L) (T)
+            alpha = exp(-sum(tau*square((ant[:, None]-ba)/one), axis=2))  # (bs,L)
+            w = alpha*theta+eps  # (bs,L)
+            sw = sum(w, axis=1)  # (bs)
+            B = transpose(exp(bc)/sum(exp(bc), axis=1)[:, None])  # (N,L)
+            Bi = B*w[:, None]/(sw[:, None]-w)[:, None]+1  # (bs,N,L)
+            B_ = prod(Bi, axis=2) - 1  # (bs,N)
+            pc = B_/sum(B_, axis=1)[:, None]  # (bs,N)
+            dBB_ = (sum(B_, axis=1)[:, None]-B_)/sum(B_, axis=1)[:, None]/sum(B_, axis=1)[:, None]  # (bs,N)
+            T1 = theta*B*w/(sw-w)/(sw-w)*(prod(Bi)/Bi)
+            print(T1.shape)
+            exit(0)
+        pb.update()
+    pb.clear()
+    return ba, bc, bw, bt
 
 
 def GradientDescent(ta, tc, ep, bs, ba, bc, bw):
@@ -107,22 +123,23 @@ def GradientDescent(ta, tc, ep, bs, ba, bc, bw):
     return ba, bc, bw
 
 
-def Evaluating(ant, con, ba, bc, bw):
-    bc = np.exp(bc) / np.sum(np.exp(bc), axis=1)[:, None]
-    bw = 1 / (1 + np.exp(-bw))
-    pc = np.array([EvidentialReasoing(a, ba, bc, bw) for a in ant])
-    err = np.sum((con - pc)*(con - pc))
-    acc = accuracy_score(np.argmax(con, axis=1), np.argmax(pc, axis=1))
-    oc = np.sum(con * les, axis=1)
-    op = np.sum(pc * les, axis=1)
-    mse = np.sum((oc - op) * (oc - op)) / len(con)
-    mae = np.sum(np.abs(oc - op)) / len(con)
-    return acc, err, mse, mae
+def Evaluating(ant, con, ba, bc, bw, bt):
+    bc = np.exp(bc)/np.sum(np.exp(bc), axis=1)[:, None]
+    bw, bt = 1/(1+exp(-bw)), 1/(1+exp(-bt))
+    pc = np.array([EvidentialReasoing(a, ba, bc, bw, bt) for a in ant])
+    res = {}
+    res['err'] = sum((con - pc)*(con - pc))
+    res['acc'] = accuracy_score(np.argmax(con, axis=1), argmax(pc, axis=1))
+    oc = sum(con * les, axis=1)
+    op = sum(pc * les, axis=1)
+    res['mse'] = sum((oc - op) * (oc - op)) / len(con)
+    res['mea'] = sum(np.abs(oc - op)) / len(con)
+    return res
 
 
 def main():
     ant, con = ReadData("../data/oil_rev.txt")
-    cnt, bn = 5000, 50
+    bn = 50
 
     # kf = StratifiedKFold(10, True)
     # for train_mask, test_mask in kf.split(ant, np.argmax(con, axis=1)):
@@ -132,34 +149,30 @@ def main():
         train_ant, train_con = ant[train_mask], con[train_mask]
         test_ant, test_con = ant[test_mask], con[test_mask]
 
-        # pred_con = np.array([EvidentialReasoing(a, train_ant, train_con, 1.0) for a in train_ant])
-        # print(accuracy_score(np.argmax(test_con, axis=1), np.argmax(pred_con, axis=1)))
+        base_ant = uniform(low, high, (bn, ant.shape[1],))
+        base_con = uniform(-1.0, 1.0, (bn, con.shape[1],))
+        base_wei = uniform(-1.0, 1.0, (bn,))
+        base_tau = uniform(-1.0, 1.0, (ant.shape[1],))
 
-        base_ant = np.random.uniform(low, high, (bn, ant.shape[1]))
-        base_con = np.random.uniform(-1.0, 1.0, (bn, con.shape[1]))
-        base_wei = np.random.uniform(-1.0, 1.0, (bn,))
+        base_ant, base_con, base_wei, base_tau = AdamOptimize(train_ant, train_con, 10, 64,
+                                                              base_ant, base_con, base_wei, base_tau)
 
-        # base_con = np.zeros((bn, con.shape[1]))
-        # for i in range(len(base_con)):
-        #     base_con[i][i % 8] = 10.0
-        # base_wei = np.zeros((bn,))
+        print(Evaluating(train_ant, train_con, base_ant, base_con, base_wei))
+        print(Evaluating(test_ant, test_con, base_ant, base_con, base_wei))
 
-        # acc, err = [], []
-        sc = 0.0
-        for _ in range(cnt):
-            base_ant, base_con, base_wei = GradientDescent(train_ant, train_con, 16,
-                                                           1e-3*(1-sc), 1e2*(1-sc), 1e1*(1-sc),
-                                                           base_ant, base_con, base_wei)
+        # for _ in range(cnt):
+        #     base_ant, base_con, base_wei = GradientDescent(train_ant, train_con, 16,
+        #                                                    1e-3*(1-sc), 1e2*(1-sc), 1e1*(1-sc),
+        #                                                    base_ant, base_con, base_wei)
 
-            a1, e1, mse1, mae1 = Evaluating(train_ant, train_con, base_ant, base_con, base_wei)
-            a2, e2, mse2, mae2 = Evaluating(test_ant, test_con, base_ant, base_con, base_wei)
-            print(_, a1, e1, mse1, mae1)
-            print(_, a2, e2, mse2, mae2)
-            if mae1 < 0.1:
-                base_con = np.exp(base_con) / np.sum(np.exp(base_con), axis=1)[:, None]
-                view.draw3d_compare(train_ant[:, 0], train_ant[:, 1], np.sum(train_con * les, axis=1),
-                                    base_ant[:, 0], base_ant[:, 1], np.sum(base_con * les, axis=1))
-                exit(0)
+        #     a1, e1, mse1, mae1 = Evaluating(train_ant, train_con, base_ant, base_con, base_wei)
+        #     a2, e2, mse2, mae2 = Evaluating(test_ant, test_con, base_ant, base_con, base_wei)
+        #     print(_, a1, e1, mse1, mae1)
+        #     print(_, a2, e2, mse2, mae2)
+        #     if mae1 < 0.1:
+        #         base_con = np.exp(base_con) / np.sum(np.exp(base_con), axis=1)[:, None]
+        #         view.draw3d_compare(train_ant[:, 0], train_ant[:, 1], np.sum(train_con * les, axis=1),
+        #                             base_ant[:, 0], base_ant[:, 1], np.sum(base_con * les, axis=1))
 
 
 if __name__ == "__main__":

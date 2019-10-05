@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import random
+import tqdm
 from sklearn.model_selection import KFold, StratifiedKFold
 
 
@@ -21,7 +22,7 @@ class EBRB():
         # reduce_sum((None,rule_num),-1) = (None)
 
         self.B = tf.reduce_prod(tf.expand_dims(self.AW/(tf.expand_dims(self.SW, -1)-self.AW), -1)*self.BC+1.0, -2)-1.0
-        # (None,rule_num,1) * (rule_num,rdim) = (None,rule_num,rdim)
+        # (None,1) - (None,rule_num) = (None,rule_num)
         # reduce_prod((None,rule_num,rdim),-2) = (None,rdim)
 
         self.Y = self.B/tf.expand_dims(tf.reduce_sum(self.B, -1), -1)
@@ -36,9 +37,7 @@ class DBRB():
 
         self.DA, self.BC, self.RW = tf.nn.softmax(self.A), tf.nn.softmax(self.C), tf.exp(self.W)
 
-        # t = self.DA * tf.expand_dims(X, -3)
-        # t = tf.sqrt(t)
-        self.AW = tf.reduce_max(tf.reduce_sum(tf.sqrt(self.DA * tf.expand_dims(X, -3))), -1) * self.RW
+        self.AW = tf.reduce_prod(tf.reduce_sum(tf.sqrt(self.DA * tf.expand_dims(X, -3)), -1), -1) * self.RW
         # (rule_num,anum,adim) * (None,1,anum,adim) = (None,rule_num,anum,adim)
         # reduce_sum((None,rule_num,anum,adim),-1) = (None,rule_num,anum)
         # reduce_max((None,rule_num,anum),-1) = (None,rule_num)
@@ -57,10 +56,11 @@ class DBRB():
 class BRB():
     def __init__(self, one, low, high, dim_1, dim_2, dim_3, e_num, e_rn, d_rn):
         self.X, self.Y = tf.placeholder(tf.float64, [None, dim_1]), tf.placeholder(tf.float64, [None, dim_3])
-        self.E = [EBRB(one, low, high, dim_1, dim_2, e_rn, self.X) for i in range(e_num)]
-        self.EO = tf.concat([tf.expand_dims(e.Y, 0) for e in self.E], 0)
-        self.D = DBRB(e_num, dim_2, dim_3, d_rn, self.EO)
-        self.ERROR = tf.keras.losses.categorical_crossentropy(self.Y, self.D.Y)
+        # self.E = [EBRB(one, low, high, dim_1, dim_2, e_rn, self.X) for i in range(e_num)]
+        # self.EO = tf.compat.v2.concat([tf.expand_dims(e.Y, -2) for e in self.E], -2)
+        # self.D = DBRB(e_num, dim_2, dim_3, d_rn, self.EO)
+        self.D = EBRB(one, low, high, dim_1, dim_3, e_rn, self.X)
+        self.ERROR = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.Y, self.D.Y))
         self.STEP = tf.train.AdamOptimizer().minimize(self.ERROR)
         self.ACC = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(self.Y, -1), tf.argmax(self.D.Y, -1)), tf.float64))
         self.SESS = tf.InteractiveSession()
@@ -68,12 +68,17 @@ class BRB():
 
     def train(self, oa, oc, ta, tc, ep=10000, bs=64):
         cb = int(len(oa)/bs)
+
         for e in range(ep):
+            # pb = tqdm.tqdm(total=cb)
             oac = list(zip(oa, oc))
             random.shuffle(oac)
             oa, oc = zip(*oac)
             for b in range(cb):
-                self.SESS.run(self.STEP, {self.X: oa[b*bs:(b+1)*bs], self.Y: oc[b*bs:(b+1)*bs]})
+                _, e = self.SESS.run([self.STEP, self.ERROR], {self.X: oa[b*bs:(b+1)*bs], self.Y: oc[b*bs:(b+1)*bs]})
+                print(e)
+                # pb.update()
+            # pb.close()
             print(e, self.SESS.run(self.ACC, {self.X: ta, self.Y: tc}))
 
     def predict(self, a, c):
@@ -84,9 +89,8 @@ def READ(filename):
     ant, con = [], []
     with open(filename, 'r') as f:
         for i in f:
-            e = list(map(float, i.strip().split(',')))
-            ant.append(e[1:-1])
-            con.append(e[-1])
+            e = list(map(float, i.strip().split()))
+            ant.append(e[:-1]), con.append(e[-1])
     les = list(set(con))
     for i in range(len(con)):
         t = les.index(con[i])
@@ -98,8 +102,9 @@ def READ(filename):
 
 
 def main():
-    ant, con, one, low, high = READ('../data/glass.data')
-    B = BRB(one, low, high, ant.shape[1], 5, con.shape[1], 8, 16, 16)
+    ant, con, one, low, high = READ('../data/Skin_NonSkin.txt')
+    print(one)
+    B = BRB(one, low, high, ant.shape[1], 5, con.shape[1], 8, 64, 64)
     skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)
     for train_mask, test_mask in skf.split(ant, np.argmax(con, -1)):
         train_ant, train_con = ant[train_mask], con[train_mask]

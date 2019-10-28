@@ -147,14 +147,14 @@ def ReadData(filename):
 def main():
     # ant, con, one, low, high = READ('../data/oil.data')
     ant, con, one, low, high = ReadData('../data/oil.data')
-    B = BRB(one, low, high, les, ant.shape[1], 5, con.shape[1], 4, 4, 4)
+    # B = BRB(one, low, high, les, ant.shape[1], 5, con.shape[1], 4, 4, 4)
     skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)
     for train_mask, test_mask in skf.split(ant, np.argmax(con, -1)):
         train_ant, train_con = ant[train_mask], con[train_mask]
         test_ant, test_con = ant[test_mask], con[test_mask]
-        B.train(train_ant, train_con, test_ant, test_con)
-        print(B.predict(test_ant, test_con))
-        break
+        # B.train(train_ant, train_con, test_ant, test_con)
+        # print(B.predict(test_ant, test_con))
+        # break
 
 
 if __name__ == "__main__":

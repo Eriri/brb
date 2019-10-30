@@ -2,9 +2,10 @@ import tensorflow as tf
 import numpy as np
 import random
 import tqdm
-from sklearn.model_selection import KFold, StratifiedKFold
+import math
 import os
-
+from sklearn.model_selection import KFold, StratifiedKFold
+from imblearn.over_sampling import SMOTE
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 
@@ -72,8 +73,6 @@ class BRB():
         self.EO = tf.compat.v2.concat([tf.expand_dims(e.Y, -2) for e in self.E], -2)
         self.D = DBRB(e_num, dim_2, dim_3, d_rn, self.EO)
 
-        # self.D = EBRB(one, low, high, dim_1, dim_3, e_rn, self.X)
-
         self.ERROR = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.Y, self.D.Y))
         self.STEP = tf.compat.v1.train.AdamOptimizer().minimize(self.ERROR)
         self.ACC = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(self.Y, -1), tf.argmax(self.D.Y, -1)), tf.float64))
@@ -105,56 +104,29 @@ class BRB():
         return self.SESS.run(self.ACC, {self.X: a, self.Y: c})
 
 
-def READ(filename):
-    ant, con = [], []
-    with open(filename, 'r') as f:
-        for i in f:
-            e = list(map(float, i.strip().split()))
-            ant.append(e[:-1]), con.append(e[-1])
-    les = list(set(con))
-    for i in range(len(con)):
-        t = les.index(con[i])
-        con[i] = np.zeros((len(les),))
-        con[i][t] = 1.0
-    ant, con = np.array(ant), np.array(con)
-    one, low, high = np.ptp(ant, axis=0), np.min(ant, axis=0), np.max(ant, axis=0)
-    return ant, con, one, low, high
+class Model():
+    def __init__(self, one, low, high, adim, rdim, rule_num):
+        self.X = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None, adim])
+        self.Y = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None, rdim])
+        self.W = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None])
+        self.E = EBRB(one, low, high, adim, rdim, rule_num, self.X)
+        self.ERROR = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.Y, self.E.Y)*self.W)
+        self.STEP = tf.train.AdamOptimizer().minimize(self.ERROR)
+        self.PRED = tf.argmax(self.E.Y)
+        self.ACC = tf.reduce_mean(tf.cast(tf.equal(self.PRED, tf.argmax(self.E.Y)), tf.float64))
+        self.SESS = tf.compat.v1.InteractiveSession()
+        self.SESS.run(tf.compat.v1.global_variables_initializer())
 
+    def train(self, ant, con, wei, ep=5, bs=64):
+        bn = int(math.ceil(len(ant)/bs))
+        for i in range(bn):
 
-les = np.arange(8)
-
-
-def trans(e, l):
-    z = np.zeros(len(l))
-    for i in range(len(l)):
-        z[i] = float(l[i] == e)
-    for i in range(len(l)-1):
-        if l[i] < e and e < l[i+1]:
-            z[i], z[i+1] = l[i+1] - e, e-l[i]
-    return z
-
-
-def ReadData(filename):
-    ant, con = [], []
-    with open(file=filename, mode='r') as f:
-        for i in f:
-            e = list(map(float, i.strip().split()))
-            ant.append(e[:-1]), con.append(trans(e[-1], les))
-    one, low, high = np.ptp(ant, axis=0), np.min(ant, axis=0), np.max(ant, axis=0)
-    return np.array(ant), np.array(con), one, low, high
+    def predict(self, ant):
+        return self.SESS.run(self.PRED)
 
 
 def main():
-    # ant, con, one, low, high = READ('../data/oil.data')
-    ant, con, one, low, high = ReadData('../data/oil.data')
-    # B = BRB(one, low, high, les, ant.shape[1], 5, con.shape[1], 4, 4, 4)
-    skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)
-    for train_mask, test_mask in skf.split(ant, np.argmax(con, -1)):
-        train_ant, train_con = ant[train_mask], con[train_mask]
-        test_ant, test_con = ant[test_mask], con[test_mask]
-        # B.train(train_ant, train_con, test_ant, test_con)
-        # print(B.predict(test_ant, test_con))
-        # break
+    pass
 
 
 if __name__ == "__main__":

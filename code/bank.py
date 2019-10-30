@@ -10,6 +10,7 @@ class EBRB:  # metric_shape category_shapes one low high rule_num result_shape
     def __init__(self, ms, cs, on, lo, hi, rn, rs):
         self.xm = tf.placeholder(dtype=tf.float64, shape=[None, ms])
         self.xc = [tf.placeholder(dtype=tf.float64, shape=[None, s]) for s in cs]
+        self.xw = tf.placeholder(dtype=tf.float64, shape=[None])
         self.yi = tf.placeholder(dtype=tf.float64, shape=[None, rs])
 
         self.am = tf.Variable(np.random.uniform(lo, hi, (rn, ms,)), dtype=tf.float64)
@@ -27,9 +28,8 @@ class EBRB:  # metric_shape category_shapes one low high rule_num result_shape
         self.bc = tf.reduce_prod(tf.expand_dims(self.aw/(tf.expand_dims(self.sw, -1)-self.aw), -1)*dco+1.0, -2)-1.0
         self.yo = self.bc/tf.expand_dims(tf.reduce_sum(self.bc, -1), -1)
 
-        self.err = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.yi, self.yo))
+        self.err = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.yi, self.yo) * self.xw)
         self.acc = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(self.yi, -1), tf.argmax(self.yo, -1)), tf.float64))
-        self.pre = 1.0 - self.yo[:, 1]
 
         self.step = tf.train.AdamOptimizer().minimize(self.err)
         self.sess = tf.Session()

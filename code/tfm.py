@@ -5,7 +5,8 @@ import tqdm
 import math
 import os
 from sklearn.model_selection import KFold, StratifiedKFold
-from imblearn.over_sampling import SMOTE
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from imblearn.metrics import geometric_mean_score
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 
@@ -108,25 +109,74 @@ class Model():
     def __init__(self, one, low, high, adim, rdim, rule_num):
         self.X = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None, adim])
         self.Y = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None, rdim])
-        self.W = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None])
+        # self.W = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None])
         self.E = EBRB(one, low, high, adim, rdim, rule_num, self.X)
-        self.ERROR = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.Y, self.E.Y)*self.W)
-        self.STEP = tf.train.AdamOptimizer().minimize(self.ERROR)
-        self.PRED = tf.argmax(self.E.Y)
-        self.ACC = tf.reduce_mean(tf.cast(tf.equal(self.PRED, tf.argmax(self.E.Y)), tf.float64))
-        self.SESS = tf.compat.v1.InteractiveSession()
+        self.ERROR = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.Y, self.E.Y))
+        self.STEP = tf.compat.v1.train.AdamOptimizer().minimize(self.ERROR)
+        self.ACC = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(self.Y, axis=-1), tf.argmax(self.E.Y, axis=-1)), tf.float64))
+        self.SESS = tf.compat.v1.Session()
         self.SESS.run(tf.compat.v1.global_variables_initializer())
 
-    def train(self, ant, con, wei, ep=5, bs=64):
-        bn = int(math.ceil(len(ant)/bs))
-        for i in range(bn):
+    def train(self, ant, con, ep=200, bs=64):
+        bn, sa = int(math.ceil(len(ant)/bs)), np.arange(len(ant))
+        pb = tqdm.tqdm(total=ep)
+        for e in range(ep):
+            np.random.shuffle(sa)
+            ant, con = ant[sa], con[sa]
+            for i in range(bn):
+                self.SESS.run(self.STEP, feed_dict={self.X: ant[i*bs:(i+1)*bs], self.Y: con[i*bs:(i+1)*bs]})
+            pb.update()
+        pb.close()
+        print(self.SESS.run([self.ACC, self.ERROR], feed_dict={self.X: ant, self.Y: con}))
 
     def predict(self, ant):
-        return self.SESS.run(self.PRED)
+        return self.SESS.run(self.E.Y, feed_dict={self.X: ant})
+
+
+def rd():
+    ant, con, zero = [], [], [np.array([0.0, 1.0]), np.array([1.0, 0.0])]
+    with open('../data/page-blocks.data') as f:
+        for i in f:
+            e = list(map(float, i.split()))
+            ant.append(e[:-1]), con.append(zero[e[-1] == 1])
+    ant, con = np.array(ant), np.array(con)
+    return ant, con, 0.5 * np.ptp(ant, axis=0), np.min(ant, axis=0), np.max(ant, axis=0)
+
+
+def print_result(y_true, y_pred):
+    print('acc:', accuracy_score(y_true, y_pred))
+    print('precision:', precision_score(y_true, y_pred))
+    print('recall:', recall_score(y_true, y_pred))
+    print('f1:', f1_score(y_true, y_pred))
+    print('g-mean:', geometric_mean_score(y_true, y_pred))
 
 
 def main():
-    pass
+    ant, con, one, low, high = rd()
+    skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)
+    for train_mask, test_mask in skf.split(ant, np.argmax(con, axis=-1)):
+        train_ant, train_con = ant[train_mask], con[train_mask]
+        test_ant, test_con = ant[test_mask], con[test_mask]
+        minant, mincon, majant, majcon = [], [], [], []
+        for a, c in zip(train_ant, train_con):
+            if c[1] == 1.0:
+                minant.append(a), mincon.append(c)
+            else:
+                majant.append(a), majcon.append(c)
+        minant, mincon, majant, majcon = np.array(minant), np.array(mincon), np.array(majant), np.array(majcon)
+        dz, models = np.zeros(majcon.shape), []
+        for i in range(10):
+            print('model %d' % i)
+            v = np.argsort(dz[:, 0]-dz[:, 1])[:len(minant)]
+            train_ant, train_con = np.concatenate((minant, majant[v])), np.concatenate((mincon, majcon[v]))
+            m = Model(one, low, high, 10, 2, 30)
+            m.train(ant, con)
+            dz += m.predict(majant)
+            models.append(m)
+        dz = np.zeros(test_con.shape)
+        for i in range(10):
+            dz += models[i].predict(test_ant)
+        print_result(np.argmax(test_con, axis=-1), np.argmax(dz, axis=-1))
 
 
 if __name__ == "__main__":

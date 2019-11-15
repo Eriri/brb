@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import KFold
+from read import hepatitis
 
 
 class BRB:
@@ -15,7 +16,8 @@ class BRB:
         if has_category:
             self.AC = [tf.Variable(np.random.normal(size=(rule_num, cs))) for cs in kwargs['category_shapes']]
             self.WC = tf.concat([tf.expand_dims(tf.distributions.kl_divergence(
-                tf.distributions.Categorical(a), tf.distributions.Categorical(tf.expand_dims(ci, -2))), -1)
+                tf.distributions.Categorical(logits=a),
+                tf.distributions.Categorical(logits=tf.expand_dims(ci, -2))), -1)
                 for a, ci in zip(self.AC, kwargs['category_inputs'])], -1)
             # [[rule_num,cs] kl [None,1,cs]] = [[None,rule_num]] =ep,cat=> [None,rule_num,category_shapes[0]]
         if has_metric and has_category:
@@ -53,7 +55,7 @@ class Model_M_C:
                       category_inputs=self.XC, category_shapes=category_shapes,
                       missing_vector=self.MV) for i in range(8)]
         self.E = BRB(junctive='con', has_metric=False, has_category=True, has_missing=False, rule_num=32, res_dim=2,
-                     category_inputs=[d.Y for d in self.D], category_shapes=[16 for d in self.D])
+                     category_inputs=[tf.math.log(d.Y) for d in self.D], category_shapes=[16 for d in self.D])
         self.ERROR = tf.reduce_mean(tf.keras.losses.categorical_crossentropy(self.Y, self.E.Y))
         self.STEP = tf.train.AdamOptimizer().minimize(self.ERROR)
         self.ACC = tf.reduce_mean(tf.cast(tf.equal(tf.argmax(self.Y, -1), tf.argmax(self, self.E.Y, -1)), tf.float64))
@@ -80,16 +82,9 @@ class Model_M_C:
         return self.SESS.run(self.ACC, feed_dict=fd)
 
 
-def read_data():
-    with open('../data/hepatitis.data') as f:
-        for l in f:
-            print(list(l.strip().split(',')))
-
-
 def main():
-    read_data()
     '''
-    sample_num, metric_data, metric_shape, low, high, one, category_date, category_shapes, missing_vectors, target = read_data()
+    sample_num, metric_data, metric_shape, low, high, one, category_date, category_shapes, missing_vector, target = ()
     mask, ep, kf = np.arange(sample_num), 50, KFold(n_splits=5)
     for e in range(ep):
         np.random.shuffle(mask)

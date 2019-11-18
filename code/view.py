@@ -51,3 +51,16 @@ def draw3d_compare(ox, oy, oz, tx, ty, tz):
     a.scatter(ox, oy, oz, c='b')
     a.scatter(tx, ty, tz, c='r')
     plt.show()
+
+
+def draw2d(x, y):
+    plt.figure()
+    plt.plot(x, y)
+    plt.show()
+
+
+def draw2d2(ax, ay, bx, by):
+    plt.figure()
+    plt.plot(ax, ay, 'r')
+    plt.plot(bx, by, 'b')
+    plt.show()

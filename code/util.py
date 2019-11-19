@@ -17,6 +17,15 @@ def read_data(dataset_name):
     return sn, md, md.shape[1], low, high, high - low, cd, cshapes, target
 
 
+def read_oil():
+    x, y = [], []
+    with open('../data/oil.data') as f:
+        for i in f:
+            z = list(map(float, i.split()))
+            x.append(z[:2]), y.append(z[-1])
+    return np.array(x), np.array(y)
+
+
 def result_category(y_true, y_pred):
     res = dict()
     res['acc'] = accuracy_score(y_true, y_pred)
@@ -25,3 +34,4 @@ def result_category(y_true, y_pred):
 def train(model, has_metric, has_category, target_type, fold=5, et=50):
     result = []
     for ex in range(et):
+        pass

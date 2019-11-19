@@ -35,13 +35,10 @@ def draw(acc, err):
     pass
 
 
-def draw3d():
+def draw3d(x, y, z):
     fig = plt.figure()
     a = Axes3D(fig)
-    ox, oy, oz = read("../data/Skin_NonSkin.txt", 1, 2500)
-    a.scatter(ox, oy, oz, c='b')
-    tx, ty, tz = read("../data/Skin_NonSkin.txt", 2, 2500)
-    a.scatter(tx, ty, tz, c='r')
+    a.scatter(x, y, z, c='r')
     plt.show()
 
 

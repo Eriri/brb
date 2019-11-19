@@ -4,6 +4,8 @@ import tensorflow as tf
 from view import *
 import time
 from scipy.stats import pearsonr
+import tqdm
+from multiprocessing import pool
 
 
 def generate():
@@ -21,8 +23,8 @@ def generate():
 
 class PM:
     def __init__(self, rule_num, res_dim, low, high, one, util):
-        self.x = tf.placeholder(dtype=tf.float64, shape=[None])
-        self.y = tf.placeholder(dtype=tf.float64, shape=[None])
+        self.x = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None])
+        self.y = tf.compat.v1.placeholder(dtype=tf.float64, shape=[None])
 
         self.a = tf.Variable(np.random.uniform(low, high, (rule_num,)), trainable=True, dtype=tf.float64)
         self.d = tf.Variable(np.log(one), trainable=True, dtype=tf.float64)
@@ -41,10 +43,10 @@ class PM:
         self.o = tf.reduce_sum(self.pc * self.u, -1)
 
         self.error = tf.reduce_mean(tf.math.square(self.y - self.o))
-        self.step = tf.train.AdamOptimizer().minimize(self.error)
+        self.step = tf.compat.v1.train.AdamOptimizer().minimize(self.error)
 
-        self.SESS = tf.Session()
-        self.SESS.run(tf.global_variables_initializer())
+        self.SESS = tf.compat.v1.Session()
+        self.SESS.run(tf.compat.v1.global_variables_initializer())
 
     def train(self, x, y, ep=10000, bs=64):
         bn, mask = int(math.ceil(len(x)/bs)), np.arange(len(x))
@@ -67,14 +69,16 @@ class PM:
 
 class FM:
     def __init__(self, rule_num, low, high, one, util, mi):
-        self.x = tf.placeholder(tf.float64, shape=[None, 2])
-        self.y = tf.placeholder(tf.float64, shape=[None])
+        self.x = tf.compat.v1.placeholder(tf.float64, shape=[None, 2])
+        self.y = tf.compat.v1.placeholder(tf.float64, shape=[None])
         self.a = tf.Variable(np.random.uniform(low, high, size=(rule_num, 2)), trainable=True, dtype=tf.float64)
         self.b = tf.Variable(np.random.normal(size=(rule_num, 5)), trainable=True, dtype=tf.float64)
         self.d = tf.Variable(np.log(one), trainable=True, dtype=tf.float64)
         self.r = tf.Variable(np.zeros(shape=(rule_num,)), trainable=True, dtype=tf.float64)
         # self.u = tf.constant(np.array(util), dtype=tf.float64)
         self.u = tf.Variable(np.array(util), trainable=True, dtype=tf.float64)
+
+        tf.keras.train.AdamOptimizer().minimize()
 
         self.w = tf.math.square((self.a - tf.expand_dims(self.x, -2))/tf.math.exp(self.d))
         self.aw = tf.math.exp(-tf.reduce_sum(self.w, -1)) * tf.exp(self.r)
@@ -87,12 +91,12 @@ class FM:
         self.mse = tf.reduce_mean(tf.math.square(self.y-self.o))
         self.rmse = tf.math.sqrt(self.mse)
         self.error = tf.reduce_sum(tf.math.square(self.y - self.o))
-        self.step = tf.train.AdamOptimizer().minimize(self.error)
+        self.step = tf.compat.v1.train.AdamOptimizer().minimize(self.error)
 
-        self.SESS = tf.Session()
-        self.SAVER = tf.train.Saver()
+        self.SESS = tf.compat.v1.Session()
+        self.SAVER = tf.compat.v1.train.Saver()
         self.PATH = './model_%d' % mi
-        self.SESS.run(tf.global_variables_initializer())
+        self.SESS.run(tf.compat.v1.global_variables_initializer())
 
     def train(self, x, y, ep=10000, bs=64):
         bn, mask = int(math.ceil(len(x)/bs)), np.arange(len(x))
@@ -122,19 +126,21 @@ def main():
     low, high, one = np.min(x, 0), np.max(x, 0), np.ptp(x, axis=0)
     util = np.array([0, 2, 4, 6, 8])
     mask = np.arange(2007)
-
+    tx, ty = x[mask[:512]], y[mask[:512]]
     rule_num = 64
     ms, ps = [], []
     for mi in range(25):
         np.random.shuffle(mask)
         model = FM(rule_num, low, high, one, util, mi)
-        tx, ty = x[mask[:512]], y[mask[:512]]
+
         model.train(tx, ty, 6400, 64)
         ms.append(model), ps.append(pearsonr(ty, model.result(tx))[0])
     print(ps)
     for i in np.argsort(np.negative(np.array(ps)))[:5]:
         print(i, ps[i])
         ms[i].save()
+
+    tf.compat.v1.ConfigProto
 
     ed = time.time()
     print("time(s): %f" % (ed-st))

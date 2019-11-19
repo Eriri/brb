@@ -58,8 +58,7 @@ class BaseModel:
         self.SESS = tf.Session()
         self.SESS.run(tf.global_variables_initializer())
 
-    def train(self, data, target, ep=10, bs=64):
-        metric_data, category_data = data
+    def train(self, metric_data, category_data, target, ep=10, bs=64):
         bn, mask = int(np.ceil(len(target)/bs)), np.arange(len(target))
         for e in range(ep):
             np.random.shuffle(mask)
@@ -69,8 +68,7 @@ class BaseModel:
                 e, _ = self.SESS.run([self.ERROR, self.STEP], feed_dict=fd)
                 print(i, e)
 
-    def predict(self, data):
-        metric_data, category_data = data
+    def predict(self, metric_data, category_data):
         bn, res = int(np.ceil(metric_data.shape[0]/64)), []
         for i in range(bn):
             fd = {self.XM: metric_data[i*64:(i+1)*64], self.XC: category_data[i*64:(i+1)*64]}

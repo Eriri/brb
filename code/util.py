@@ -22,4 +22,6 @@ def result_category(y_true, y_pred):
     res['acc'] = accuracy_score(y_true, y_pred)
 
 
-def train(model, data, fold, et):
+def train(model, has_metric, has_category, target_type, fold=5, et=50):
+    result = []
+    for ex in range(et):

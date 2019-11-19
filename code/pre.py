@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from view import *
 import time
+from scipy.stats import pearsonr
 
 
 def generate():
@@ -65,13 +66,13 @@ class PM:
 
 
 class FM:
-    def __init__(self, rule_num, one, util, raw_x, raw_y):
+    def __init__(self, rule_num, low, high, one, util, mi):
         self.x = tf.placeholder(tf.float64, shape=[None, 2])
         self.y = tf.placeholder(tf.float64, shape=[None])
-        self.a = tf.Variable(raw_x, trainable=True, dtype=tf.float64)
-        self.b = tf.Variable(raw_y, trainable=True, dtype=tf.float64)
+        self.a = tf.Variable(np.random.uniform(low, high, size=(rule_num, 2)), trainable=True, dtype=tf.float64)
+        self.b = tf.Variable(np.random.normal(size=(rule_num, 5)), trainable=True, dtype=tf.float64)
         self.d = tf.Variable(np.log(one), trainable=True, dtype=tf.float64)
-        self.r = tf.Variable(np.random.normal(size=(rule_num,)), trainable=True, dtype=tf.float64)
+        self.r = tf.Variable(np.zeros(shape=(rule_num,)), trainable=True, dtype=tf.float64)
         # self.u = tf.constant(np.array(util), dtype=tf.float64)
         self.u = tf.Variable(np.array(util), trainable=True, dtype=tf.float64)
 
@@ -82,53 +83,59 @@ class FM:
         self.pc = self.bc / tf.expand_dims(tf.reduce_sum(self.bc, -1), -1)
         self.o = tf.reduce_sum(self.pc * self.u, -1)
 
-        self.error = tf.reduce_mean(tf.math.abs(self.y - self.o))
+        self.mae = tf.reduce_mean(tf.math.abs(self.y-self.o))
+        self.mse = tf.reduce_mean(tf.math.square(self.y-self.o))
+        self.rmse = tf.math.sqrt(self.mse)
+        self.error = tf.reduce_sum(tf.math.square(self.y - self.o))
         self.step = tf.train.AdamOptimizer().minimize(self.error)
 
         self.SESS = tf.Session()
+        self.SAVER = tf.train.Saver()
+        self.PATH = './model_%d' % mi
         self.SESS.run(tf.global_variables_initializer())
 
     def train(self, x, y, ep=10000, bs=64):
         bn, mask = int(math.ceil(len(x)/bs)), np.arange(len(x))
         for e in range(ep):
             np.random.shuffle(mask)
-            tx, ty = x[mask], y[mask]
             for i in range(bn):
-                self.SESS.run(self.step, feed_dict={self.x: tx[i*bs:(i+1)*bs], self.y: ty[i*bs:(i+1)*bs]})
-            print(e, self.predict(x, y))
+                fd = {self.x: x[mask[i*bs:(i+1)*bs]], self.y: y[mask[i*bs:(i+1)*bs]]}
+                self.SESS.run(self.step, feed_dict=fd)
+            self.predict(e, x, y)
 
-    def predict(self, x, y):
-        return self.SESS.run(self.error, feed_dict={self.x: x, self.y: y})
+    def predict(self, e, x, y):
+        print(e, self.SESS.run([self.error, self.mae, self.mse], feed_dict={self.x: x, self.y: y}))
 
     def result(self, x):
         return self.SESS.run(self.o, feed_dict={self.x: x})
+
+    def save(self):
+        self.SAVER.save(self.SESS, self.PATH)
+
+    def load(self):
+        self.SAVER.restore(self.SESS, self.PATH)
 
 
 def main():
     st = time.time()
     x, y = generate()
-    one = 0.2 * np.ptp(x, axis=0)
+    low, high, one = np.min(x, 0), np.max(x, 0), np.ptp(x, axis=0)
     util = np.array([0, 2, 4, 6, 8])
     mask = np.arange(2007)
 
-    yc = []
-    for yi in y:
-        z = -10 * np.zeros_like(util)
-        for i in range(5):
-            if util[i] == yi:
-                z[i] = 0.0
-        for i in range(4):
-            if util[i] < yi and yi < util[i+1]:
-                z[i] = max(-10, np.log(util[i+1]-yi))
-                z[i+1] = max(-10, np.log(yi-util[i]))
-        yc.append(z)
-    yc = np.array(yc)
+    rule_num = 64
+    ms, ps = [], []
+    for mi in range(25):
+        np.random.shuffle(mask)
+        model = FM(rule_num, low, high, one, util, mi)
+        tx, ty = x[mask[:512]], y[mask[:512]]
+        model.train(tx, ty, 6400, 64)
+        ms.append(model), ps.append(pearsonr(ty, model.result(tx))[0])
+    print(ps)
+    for i in np.argsort(np.negative(np.array(ps)))[:5]:
+        print(i, ps[i])
+        ms[i].save()
 
-    np.random.shuffle(mask)
-    raw_x, raw_y = x[mask[:64]], yc[mask[:64]]
-    model = FM(64, one, util, raw_x, raw_y)
-    model.train(x, y, 400)
-    print(np.mean(np.abs(model.result(x)-y)))
     ed = time.time()
     print("time(s): %f" % (ed-st))
 

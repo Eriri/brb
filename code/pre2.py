@@ -1,48 +1,61 @@
 import tensorflow as tf
 import numpy as np
-from util import read_oil
+from util import read_oil, BaseBRB, RIMER
+from sklearn.utils import shuffle
+from sklearn.metrics import r2_score, mean_absolute_error
+from scipy.stats import pearsonr
+from tensorflow.keras.models import load_model
+import time
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
-class BRB(tf.Module):
+class Model(tf.keras.Model):
     def __init__(self, rule_num, att_dim, res_dim, low, high, one, util):
-        super(BRB, self).__init__(name=None)
-        self.A = tf.Variable(np.random.uniform(low, high, size=(rule_num, att_dim,)), dtype=tf.float64, trainable=True)
-        self.D = tf.Variable(np.log(one), dtype=tf.float64, trainable=True)
-        self.B = tf.Variable(tf.random.normal(shape=(rule_num, res_dim,), dtype=tf.float64), dtype=tf.float64, trainable=True)
-        self.R = tf.Variable(tf.zeros(shape=(rule_num,), dtype=tf.float64), dtype=tf.float64, trainable=True)
+        super(Model, self).__init__()
+        self.BRB = (  # AN,AC,D,B,R
+            tf.Variable(np.random.uniform(low, high, size=(rule_num, att_dim,)), dtype=tf.float64, trainable=True),
+            None,
+            tf.Variable(np.sqrt(one), dtype=tf.float64, trainable=True),
+            tf.Variable(tf.random.normal(shape=(rule_num, res_dim,), dtype=tf.float64), dtype=tf.float64, trainable=True),
+            tf.Variable(tf.zeros(shape=(rule_num,), dtype=tf.float64), dtype=tf.float64, trainable=True))
+
         self.U = tf.Variable(util, dtype=tf.float64, trainable=True)
+        self.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.MAE, metrics=['mae'])
 
-    def __call__(self, x):
-        w = tf.math.square((self.A - tf.expand_dims(x, -2)) / tf.math.exp(self.D))
-        aw = tf.math.exp(-tf.reduce_sum(w, -1)) * tf.math.exp(self.R)
-        sw = tf.reduce_sum(aw, -1)
-        bc = tf.reduce_prod(tf.expand_dims(aw/(tf.expand_dims(sw, -1)-aw), -1)*tf.nn.softmax(self.B)+1.0, -2)-1.0
-        pc = bc / tf.expand_dims(tf.reduce_sum(bc, -1), -1)
-        out = tf.reduce_sum(pc*self.U, -1)
-        return out
+    def call(self, inputs):
+        return tf.reduce_sum(RIMER((inputs, None), self.BRB, 'con', 'nume') * self.U, -1)
 
 
-def train(brb, x, y, ep, bs):
-    ds = tf.data.Dataset.from_tensor_slices((x, y))
-    ds = ds.shuffle(1024).batch(bs).repeat(ep)
-    opt = tf.keras.optimizers.Adam()
-    tape = tf.GradientTape()
-    for tx, ty in ds:
-        with tape:
-            # loss = tf.keras.losses.MSE(ty, brb(tx))
-            loss = tf.keras.losses.MAE(ty, brb(tx))
-        grads = tape.gradient(loss, brb.trainable_variables)
-        opt.apply_gradients(zip(grads, brb.trainable_variables))
-        print(loss.numpy())
+def experiment(x, y, e):
+    x, y = shuffle(x, y)
+    tx, ty, util = x[:512], y[:512], np.arange(0, 10, 2, np.float64)
+    strategy = tf.distribute.MirroredStrategy()
+    z = []
+    for base in range(10):
+        with strategy.scope():
+            brb = Model(64, 2, 5, np.min(tx, axis=0), np.max(tx, axis=0), np.ptp(tx, axis=0), util)
+        res = []
+        for i in range(16):
+            st = time.time()
+            brb.fit(x=tx, y=ty, batch_size=64*4, epochs=1600, verbose=0)
+            py = brb.predict(tx)
+            v = [brb.evaluate(x, y, verbose=0)[0], mean_absolute_error(ty, py), r2_score(ty, py), pearsonr(ty, py)[0]]
+            ed = time.time()
+            print(i, ed-st, v), res.append(v)
+        z.append(res), brb.save('models/base_%d_%d.h5' % (e, base))
+    return z
 
 
 def main():
     x, y = read_oil()
-    low, high, one = np.min(x, 0), np.max(x, 0), np.ptp(x, 0)
-    util = np.array([0.0, 2.0, 4.0, 6.0, 8.0])
-    brb = BRB(64, 2, 5, low, high, one, util)
-    train(brb, x[-512:], y[-512:], 100, 64)
+    res = experiment(x, y, 3)
+    np.save('eval3.npy', res)
+    print(res)
 
 
 if __name__ == "__main__":
+    tf.keras.backend.set_floatx('float64')
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    [tf.config.experimental.set_memory_growth(gpu, True) for gpu in gpus]
     main()

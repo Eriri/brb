@@ -7,6 +7,7 @@ from scipy.stats import pearsonr
 from tensorflow.keras.models import load_model
 import time
 import os
+import sys
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
@@ -43,14 +44,15 @@ def experiment(x, y, e):
             v = [brb.evaluate(x, y, verbose=0)[0], mean_absolute_error(ty, py), r2_score(ty, py), pearsonr(ty, py)[0]]
             ed = time.time()
             print(i, ed-st, v), res.append(v)
-        z.append(res), brb.save('models/base_%d_%d.h5' % (e, base))
+        z.append(res), brb.save('models/base_%d_%d' % (e, base))
     return z
 
 
 def main():
+    e = int(sys.argv[1])
     x, y = read_oil()
-    res = experiment(x, y, 3)
-    np.save('eval3.npy', res)
+    res = experiment(x, y, e)
+    np.save('eval%d.npy' % e, res)
     print(res)
 
 

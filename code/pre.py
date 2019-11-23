@@ -23,8 +23,8 @@ def experiment(x, y, e):
 
 def main():
     x, y = read_oil()
-    strategy = tf.distribute.MirroredStrategy()
-    b = tf.keras.models.load_model('base_0_0')
+    for e in range(10):
+        experiment(x, y, e)
 
 
 if __name__ == "__main__":

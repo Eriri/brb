@@ -61,3 +61,11 @@ def draw2d2(ax, ay, bx, by):
     plt.plot(ax, ay, 'r')
     plt.plot(bx, by, 'b')
     plt.show()
+
+
+def drawxy(xy):
+    '''[(x,y,label),(x,y,label)...(x,y,label)]'''
+    plt.figuer()
+    for x, y, l in xy:
+        plt.plot(x, y, label=l, color=np.random.rand(3, 1))
+    plt.show()

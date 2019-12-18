@@ -21,18 +21,16 @@ def read(filename, c, limit=None):
     return np.array(ox), np.array(oy), np.array(oz)
 
 
-def draw(acc, err):
-    x = np.arange(len(acc))
+def draw(x, y1, l1, y2, l2):
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
-    ax1.plot(x, acc, 'b')
-    ax1.set_ylabel('accuracy')
+    ax1.plot(x, y1, label=l1)
     ax2 = ax1.twinx()
-    ax2.plot(x, err, 'r')
-    ax2.set_ylabel('error')
+    ax2.plot(x, y2, label=l2)
+    ax1.legend()
+    ax2.legend()
+    # plt.legend()
     plt.show()
-
-    pass
 
 
 def draw3d(x, y, z):
@@ -63,9 +61,17 @@ def draw2d2(ax, ay, bx, by):
     plt.show()
 
 
+def draw2d3(x, y, X, Y):
+    plt.figure()
+    plt.plot(x, y)
+    plt.plot(X, Y, 'ro')
+    plt.show()
+
+
 def drawxy(xy):
     '''[(x,y,label),(x,y,label)...(x,y,label)]'''
-    plt.figuer()
+    plt.figure()
     for x, y, l in xy:
-        plt.plot(x, y, label=l, color=np.random.rand(3, 1))
+        plt.plot(x, y, label=l)
+    plt.legend()
     plt.show()

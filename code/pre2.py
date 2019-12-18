@@ -14,12 +14,13 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 class Model(tf.keras.Model):
     def __init__(self, rule_num, att_dim, res_dim, low, high, one, util):
         super(Model, self).__init__()
-        self.BRB = (  # AN,AC,D,B,R
+        self.BRB = (  # AN,AC,E,D,B,R
             tf.Variable(np.random.uniform(low, high, size=(rule_num, att_dim,)), dtype=tf.float64, trainable=True),
             None,
+            tf.Variable(tf.zeros(shape=(att_dim,), dtype=tf.float64), dtype=tf.float64, trainable=True),
             tf.Variable(np.sqrt(one), dtype=tf.float64, trainable=True),
             tf.Variable(tf.random.normal(shape=(rule_num, res_dim,), dtype=tf.float64), dtype=tf.float64, trainable=True),
-            tf.Variable(tf.zeros(shape=(rule_num,), dtype=tf.float64), dtype=tf.float64, trainable=True))
+            tf.Variable(tf.ones(shape=(rule_num,), dtype=tf.float64), dtype=tf.float64, trainable=True))
 
         self.U = tf.Variable(util, dtype=tf.float64, trainable=True)
         self.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.MAE, metrics=['mae'])
@@ -35,15 +36,16 @@ def experiment(x, y, e):
     z = []
     for base in range(10):
         with strategy.scope():
-            brb = Model(64, 2, 5, np.min(tx, axis=0), np.max(tx, axis=0), np.ptp(tx, axis=0), util)
+            brb = Model(128, 2, 5, np.min(tx, axis=0), np.max(tx, axis=0), np.ptp(tx, axis=0), util)
         res = []
         for i in range(16):
             st = time.time()
-            brb.fit(x=tx, y=ty, batch_size=64*4, epochs=1600, verbose=0)
+            brb.fit(x=tx, y=ty, batch_size=64*4, epochs=1600, verbose=1)
             py = brb.predict(tx)
             v = [brb.evaluate(x, y, verbose=0)[0], mean_absolute_error(ty, py), r2_score(ty, py), pearsonr(ty, py)[0]]
             ed = time.time()
             print(i, ed-st, v), res.append(v)
+            time.sleep(1.0)
         z.append(res), brb.save('models/base_%d_%d' % (e, base))
     return z
 

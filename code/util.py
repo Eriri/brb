@@ -4,7 +4,7 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import KFold, StratifiedKFold
 
 
-def read_data(dataset_name):
+def read_data_numeric(dataset_name):
     ds = fetch_openml(name=dataset_name)
     sn = ds['target'].shape[0]
     fn, cg, tn = list(ds['feature_names']), ds['categories'], np.array(list(set(ds['target'])))
@@ -28,24 +28,13 @@ def read_oil():
 
 def kfold(x, y, n_splits, stratified=False):
     kf = KFold(n_splits=n_splits) if not stratified else StratifiedKFold(n_splits=n_splits)
-    data = []
-    for train_mask, test_mask in kf.split(x, y):
-        data.append((x[train_mask], y[train_mask], x[test_mask], y[test_mask]))
-    return data
+    return [(x[train_mask], y[train_mask], x[test_mask], y[test_mask]) for train_mask, test_mask in kf.split(x, y)]
 
 
-def generate_variable_numerical(rule_num, att_dim, low, high, dtype=tf.float64, trainable=True):
-    '''[rule_num,att_dim]'''
-    return tf.Variable(np.random.uniform(low, high, size=(rule_num, att_dim,)), trainable=trainable, dtype=dtype)
-
-
-def generate_variable_categorical(rule_num, att_dims, dtype=tf.float64, trainable=True):
-    '''[[rule_num,att_dim],...]'''
-    return [tf.Variable(np.random.normal(size=(rule_num, att_dim)), trainable=trainable, dtype=dtype) for att_dim in att_dims]
-
-
-def genertae_normal(shape, dtype=tf.float64, trainable=True):
-    return tf.Variable(tf.random.normal(shape=shape, dtype=dtype), trainable=trainable, dtype=dtype)
+def generate_variable(shape, dtype=tf.float32, trainable=True, initial_value=None):
+    if initial_value is None:
+        return tf.Variable(tf.random.normal(shape=shape, dtype=dtype), trainable=trainable, dtype=dtype)
+    return tf.Variable(initial_value=initial_value, expected_shape=shape, trainable=trainable, dtype=dtype)
 
 
 def replace_nan_with_zero(x):
@@ -58,9 +47,10 @@ def replace_zero_with_one(x):
 
 def activating_weight_categorical(x, a, rw, junc):
     '''
-    [[None,att_dim],...],[[rule_num,att_dim],...],[rule_num]->[None,rule_num]
+    [[None,cat_dim],...],[[rule_num,cat_dim],...],[rule_num]->[None,rule_num]
     a normalized, rw not negative
     '''
+    w = [tf.reduce_sum(tf.math.abs(ai - tf.expand_dims(xi, -2)), -1) for xi, ai in zip(x, a)]
     w = [tf.reduce_sum(tf.math.sqrt(ai * tf.expand_dims(xi, -2)), -1) for xi, ai in zip(x, a)]
     if junc == 'con':
         return tf.reduce_prod(tf.concat([tf.expand_dims(replace_zero_with_one(wi), -1) for wi in w], -1), -1)
@@ -79,6 +69,18 @@ def activating_weight_numerical(x, a, o, rw, junc):
         return tf.math.exp(-tf.reduce_sum(replace_nan_with_zero(w), -1)) * rw
     if junc == 'dis':
         return tf.reduce_sum(replace_nan_with_zero(tf.math.exp(tf.negative(w))), -1) * rw
+    raise Exception('junc should be either con or dis')
+
+
+def activating_weight_distribution(x, a, rw, junc):
+    '''
+    [None,dis_num,dis_dim],[rule_num,dis_num,dis_dim],[rile_num]->[None,rule_num]
+    '''
+    w = tf.math.
+    if junc == 'con':
+        pass
+    if junc == 'dis':
+        pass
     raise Exception('junc should be either con or dis')
 
 

@@ -76,11 +76,10 @@ def activating_weight_distribution(x, a, rw, junc):
     '''
     [None,dis_num,dis_dim],[rule_num,dis_num,dis_dim],[rile_num]->[None,rule_num]
     '''
-    w = tf.math.
     if junc == 'con':
-        pass
+        return
     if junc == 'dis':
-        pass
+        return
     raise Exception('junc should be either con or dis')
 
 

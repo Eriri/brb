@@ -21,22 +21,38 @@ class Base:
         self.b = generate_variable(shape=(rule_num, res_dim,))
 
     def __call__(self, x):
-
+        '''
+        ([None,att_dim],[[None],...],[None,dis_num,dis_dim])
+        '''
+        xn, xc, xd = x
         if self.data_type == 'numerical' or self.data_type == 'mixed':
-            activating_weight_numerical(x, self.an, tf.math.square(self.on) + tf.constant(1e-9), tf.nn.si
-            pass
+            wn = activating_weight_numerical(xn, self.an, tf.math.square(self.on) + tf.constant(1e-9), tf.nn.exp(self.r), self.junctive)
         if self.data_type == 'categorical' or self.data_type == 'mixed':
-            pass
+            wc = activating_weight_categorical(xc, self.ac, tf.math.exp(self.r), self.junctive)
         if self.data_type == 'distribution':
-            pass
+            aw = activating_weight_distribution(xd, self.ad, tf.math.exp(self.r), self.junctive)
+        if self.data_type == 'mixed':
+            w = tf.concat([tf.expand_dims(wn, -1), tf.expand_dims(wc, -1)], -1)
+            if self.junctive == 'con':
+                aw = tf.reduce_prod(w, -1)
+            if self.junctive == 'dis':
+                aw = tf.reduce_sum(w, -1)
+        elif self.data_type == 'numerical':
+            aw = wn
+        elif self.data_type == 'categorical':
+            aw = wc
+        else:
+            raise Exception('activating failed')
+        return evidential_reasoning(aw, tf.nn.softmax(self.b))
 
 
 class Model:
     def __init__(self):
-
         pass
 
     def train(self, x, y, bs, ep):
+        X, Y = tf.placeholder(), tf.placeholder()
+
         pass
 
     def evaluate(self, x, y):

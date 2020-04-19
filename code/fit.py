@@ -15,8 +15,8 @@ class Model(tf.keras.Model):
         self.compile(optimizer=tf.keras.optimizers.Adam(), loss=tf.keras.losses.MSE, metrics=['mse'])
 
     def call(self, inputs):
-        w = tf.math.square((tf.expand_dims(self.AN, -1) - tf.expand_dims(inputs, -2)) / (tf.math.square(self.D)+0.1))
-        aw = tf.exp(-tf.reduce_sum(w, -1)) * (tf.math.square(self.R) + 0.1)
+        w = tf.math.square((tf.expand_dims(self.AN, -1) - tf.expand_dims(inputs, -2)) / (tf.math.square(self.D)+0.01))
+        aw = tf.exp(-tf.reduce_sum(w, -1)) * (tf.math.square(self.R) + 0.01)
         # aw = tf.exp(-tf.reduce_sum(w, -1)) * tf.math.exp(self.R)
         sw = tf.reduce_sum(aw, -1)
         bc = tf.reduce_prod(tf.expand_dims(aw/(tf.expand_dims(sw, -1)-aw), -1)*tf.nn.softmax(self.B)+1.0, -2)-1.0
@@ -25,19 +25,25 @@ class Model(tf.keras.Model):
 
 
 def main():
-    def f(x): return np.exp(-np.square(x-2))+0.5*np.exp(-np.square(x+2))
-    x = np.linspace(-5, 5, 1000)
+    def g(x): return np.exp(-np.square(x-2))+0.5*np.exp(-np.square(x+2))
+    def f(x): return x
+    x = np.linspace(0, 3, 1000)
     y = f(x)
-    brb = Model(5, 5, -5, 5, 10, np.array([-0.5, 0.0, 0.5, 1.0, 1.5]))
+    brb = Model(5, 5, 0, 3, 10, np.array([-3.5, -2.0, -0.5, 1.0, 3.]))
+
     st = time.time()
     brb.fit(x=x, y=y, batch_size=32, epochs=1600, verbose=1)
     ed = time.time()
+
+    x = np.linspace(0, 3, 1500)
+    y = f(x)
     y_ = brb.predict(x=x)
+    draw2d(x, y_)
     draw2d(x, np.square(y-y_))
-    print(ed-st, np.mean(np.square(y-y_)))
-    X = brb.AN.numpy()
-    Y = tf.reduce_sum(tf.nn.softmax(brb.B) * brb.U, -1).numpy()
-    draw2d3(x, y, X, Y)
+    # print(ed-st, np.mean(np.square(y-y_)))
+    # X = brb.AN.numpy()
+    # Y = tf.reduce_sum(tf.nn.softmax(brb.B) * brb.U, -1).numpy()
+    # draw2d3(x, y, X, Y)
 
 
 if __name__ == "__main__":

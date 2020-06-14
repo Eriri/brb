@@ -1,7 +1,5 @@
 import numpy as np
 import tensorflow as tf
-import tqdm
-from sklearn.datasets import fetch_openml
 from sklearn.model_selection import KFold, StratifiedKFold
 
 
@@ -42,12 +40,13 @@ def training(model, x, y, ep=10, bs=64):
     ds = tf.data.Dataset.from_tensor_slices((x, y)).shuffle(1024).batch(bs).repeat(ep)
     opt = tf.optimizers.Adam()
     total = ep * np.ceil(y.shape[0] / bs)
+    trainable_variables = model.trainable_variables
     for cnt, (xi, yi) in enumerate(ds):
         with tf.GradientTape(persistent=True) as gt:
             pi = model(xi)
             acc = tf.reduce_mean(tf.metrics.sparse_categorical_accuracy(yi, pi))
             loss = tf.reduce_mean(tf.losses.sparse_categorical_crossentropy(yi, pi))
-        opt.apply_gradients(zip(gt.gradient(loss, model.tv), model.tv))
+        opt.apply_gradients(zip(gt.gradient(loss, trainable_variables), trainable_variables))
         print("loss=%.6f, acc=%.6f, %.3lf%" % (loss.numpy(), acc.numpy(), cnt/total), end='\r')
 
 
@@ -60,10 +59,16 @@ def evaluating(model, x, y, mtype):
         return
 
 
-def generate_variable(shape, dtype=tf.float32, trainable=True, initial_value=None):
+def generate_variable(shape, dtype=tf.float64, trainable=True, initial_value=None):
     if initial_value is None:
         return tf.Variable(tf.random.normal(shape=shape, dtype=dtype), trainable=trainable, dtype=dtype)
     return tf.Variable(initial_value=initial_value, shape=shape, trainable=trainable, dtype=dtype)
+
+
+def generate_constant(shape, dtype=tf.float64, initial_value=None):
+    if initial_value is None:
+        return tf.constant(tf.random.normal(shape=shape, dtype=dtype), dtype=dtype)
+    return tf.constant(value=initial_value, shape=shape, dtype=dtype)
 
 
 def generate_junctive(junc):

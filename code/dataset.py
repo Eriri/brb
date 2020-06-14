@@ -15,6 +15,14 @@ def dataset_adult():
     return (nume, cate), cgs, res
 
 
+def dataset_numeric_classification(name, version='active'):
+    ds = fetch_openml(name=name, version=version)
+    data, target = ds['data'], ds['target']
+    pot = list(set(target))
+    target = np.array(np.vectorize(lambda x: pot.index(x))(target), np.int32)
+    return data, target, data.shape[-1], len(pot)
+
+
 def dataset_oil():
     x, y = [], []
     with open('../data/oil.data') as f:

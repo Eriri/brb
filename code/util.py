@@ -65,12 +65,6 @@ def generate_variable(shape, dtype=tf.float64, trainable=True, initial_value=Non
     return tf.Variable(initial_value=initial_value, shape=shape, trainable=trainable, dtype=dtype)
 
 
-def generate_constant(shape, dtype=tf.float64, initial_value=None):
-    if initial_value is None:
-        return tf.constant(tf.random.normal(shape=shape, dtype=dtype), dtype=dtype)
-    return tf.constant(value=initial_value, shape=shape, dtype=dtype)
-
-
 def generate_junctive(junc):
     if junc == 'con':
         return tf.function(lambda x: tf.reduce_prod(x, -1))

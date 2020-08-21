@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.datasets import fetch_openml
-
+from sklearn.utils import shuffle
 
 def dataset_adult():
     ds = fetch_openml('adult', 2)
@@ -22,6 +22,12 @@ def dataset_numeric_classification(name, version='active'):
     target = np.array(np.vectorize(lambda x: pot.index(x))(target), np.int32)
     return data, target, data.shape[-1], len(pot)
 
+def missing_at_random(data, rate, random_state=None):
+    en = np.prod(date.shape)
+    men = np.ceil(en * rate)
+    mask = np.array(shuffle([False] * (en - men) + [True] * men, random_state=random_state))
+    data[mask.reshape(data.shape)] = np.nan
+    return data
 
 def dataset_oil():
     x, y = [], []

@@ -1,0 +1,1024 @@
+TensorBoard 2.2.1 at http://acm:6006/ (Press CTRL+C to quit)
+W0721 14:53:07.242594 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0721 20:59:27.456966 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0721 21:20:51.738091 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0721 22:57:08.623663 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 01:28:46.603194 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 01:31:27.436955 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 01:34:22.618202 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 01:36:13.272322 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 08:33:11.119098 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 12:50:11.630126 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0722 12:51:56.838582 140204890355456 directory_watcher.py:262] File logs/events.out.tfevents.1595393495.acm.11812.5.v2 updated even though the current file is logs/events.out.tfevents.1595393507.acm.12004.5.v2
+W0722 17:11:23.790101 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 17:12:59.243306 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 17:13:49.441671 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 17:16:20.390684 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 17:18:06.065062 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 17:19:56.750597 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 17:22:58.088596 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:05:04.567136 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:07:05.280437 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:09:36.261978 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:12:07.061735 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:13:52.656103 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:15:43.371617 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:17:59.132811 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:19:54.584144 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:22:25.100695 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:23:15.321398 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 20:24:40.834067 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0722 21:07:38.639287 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0723 03:17:03.200288 140204627187456 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0723 05:51:10.431476 140204627187456 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+W0723 11:13:56.112392 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:14:36.295495 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:15:26.383364 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:16:56.552275 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:17:41.738917 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:24:47.272827 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:25:47.412362 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:32:27.934502 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:34:38.741327 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:35:43.916777 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 11:50:19.699178 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0723 13:00:50.492062 140204635580160 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+W0723 13:08:00.104923 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 14:09:25.977381 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 18:10:01.768057 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0723 18:12:47.951016 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0723 18:20:14.038459 140204643972864 _internal.py:122] ::ffff:127.0.0.1 - - [23/Jul/2020 18:20:14] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0723 21:31:38.169548 140204874880768 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+W0724 10:33:38.652579 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:20:14.870422 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:31:14.793076 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:42:53.941624 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:53:34.857907 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:56:45.141993 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:58:45.403937 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 11:59:30.610186 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:01:26.185563 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:02:26.406080 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:03:16.696256 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:11:18.880338 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:16:30.133488 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:17:30.464232 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:22:20.849368 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:23:35.968883 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:25:46.196415 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0724 12:39:31.674988 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0724 12:53:46.895979 140204874880768 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+W0724 14:50:55.891288 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0724 17:37:44.788058 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [24/Jul/2020 17:37:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0724 18:34:08.887940 140204643972864 _internal.py:122] ::ffff:127.0.0.1 - - [24/Jul/2020 18:34:08] code 400, message Bad request syntax ('~~\x01\x00\x124Vx\x124/\x00\x08\x02\x00\x03Y\x10\x11\x15Q\x11\x03kÊ')
+W0724 19:55:55.955417 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0725 03:45:06.506455 140204866488064 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0725 14:04:40.121828 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [25/Jul/2020 14:04:40] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0725 17:11:24.534436 140204643972864 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0725 17:24:47.948870 140204643972864 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0726 06:17:15.368942 140204874880768 _internal.py:122] ::ffff:127.0.0.1 - - [26/Jul/2020 06:17:15] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0726 20:15:57.704190 140204643972864 _internal.py:122] ::ffff:127.0.0.1 - - [26/Jul/2020 20:15:57] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0727 13:43:19.781147 140204643972864 _internal.py:122] ::ffff:127.0.0.1 - - [27/Jul/2020 13:43:19] code 400, message Bad request syntax ('[\x00\x00\x00H\x00\x00\x00\x01\x10\x01\x00\x01\x04j\x00\x00\x01\x00\x00\x00\x00')
+E0727 20:47:30.401277 140204643972864 _internal.py:122] ::ffff:127.0.0.1 - - [27/Jul/2020 20:47:30] code 400, message Bad request syntax ('\x04\x01\x00\x19h/8¡\x00')
+E0727 20:48:29.747581 140204866488064 _internal.py:122] ::ffff:127.0.0.1 - - [27/Jul/2020 20:48:29] code 400, message Bad request syntax ('\x05\x01\x00')
+E0727 20:49:30.025501 140204866488064 _internal.py:122] ::ffff:127.0.0.1 - - [27/Jul/2020 20:49:30] code 400, message Bad request syntax ('\x05\x01\x00')
+E0731 09:56:32.225971 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [31/Jul/2020 09:56:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0731 13:03:01.282385 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [31/Jul/2020 13:03:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0731 16:37:47.166678 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [31/Jul/2020 16:37:47] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0731 17:39:44.315960 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [31/Jul/2020 17:39:44] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0731 23:08:50.999804 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [31/Jul/2020 23:08:50] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0802 13:27:32.293100 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [02/Aug/2020 13:27:32] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0802 15:01:42.414337 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [02/Aug/2020 15:01:42] code 400, message Bad request syntax ('[\x00\x00\x00H\x00\x00\x00\x01\x10\x01\x00\x01\x04j\x00\x00\x01\x00\x00\x00\x00')
+E0804 01:36:29.392502 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [04/Aug/2020 01:36:29] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0804 13:48:21.223853 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [04/Aug/2020 13:48:21] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0806 16:06:43.641602 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [06/Aug/2020 16:06:43] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0806 16:27:48.077217 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [06/Aug/2020 16:27:48] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0808 14:32:15.880603 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [08/Aug/2020 14:32:15] code 400, message Bad request syntax ('&&&&y\x860\x14<ÒiÖHË\x89\x02ÀË9³¥\x07')
+E0808 15:01:57.415508 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [08/Aug/2020 15:01:57] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0809 01:52:41.460413 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [09/Aug/2020 01:52:41] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+W0813 12:11:44.745902 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0813 14:26:09.498270 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0813 16:06:03.904043 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0813 18:33:07.009864 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0814 00:19:56.699885 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [14/Aug/2020 00:19:56] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0814 01:01:05.281306 140204890355456 directory_watcher.py:262] File logs/events.out.tfevents.1597314833.acm.20965.5.v2 updated even though the current file is logs/events.out.tfevents.1597338059.acm.29978.5.v2
+W0814 01:44:37.875688 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 01:46:58.373664 140204890355456 plugin_event_accumulator.py:332] Found more than one graph event per run, or there was a metagraph containing a graph_def, as well as one or more graph events.  Overwriting the graph with the newest event.
+W0814 01:50:03.604844 140204890355456 plugin_event_accumulator.py:332] Found more than one graph event per run, or there was a metagraph containing a graph_def, as well as one or more graph events.  Overwriting the graph with the newest event.
+W0814 01:51:38.727953 140204890355456 plugin_event_accumulator.py:332] Found more than one graph event per run, or there was a metagraph containing a graph_def, as well as one or more graph events.  Overwriting the graph with the newest event.
+W0814 01:57:39.255141 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 01:57:39.255383 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator 'train'
+W0814 01:59:04.365226 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 01:59:04.365415 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator 'train'
+W0814 01:59:44.728996 140204890355456 plugin_event_accumulator.py:332] Found more than one graph event per run, or there was a metagraph containing a graph_def, as well as one or more graph events.  Overwriting the graph with the newest event.
+W0814 02:00:09.910093 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 02:00:09.910363 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator 'train'
+W0814 02:35:06.700535 140204890355456 plugin_event_accumulator.py:332] Found more than one graph event per run, or there was a metagraph containing a graph_def, as well as one or more graph events.  Overwriting the graph with the newest event.
+W0814 02:35:36.724573 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 02:35:36.724869 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator 'train'
+E0814 02:42:53.959124 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:54.012111 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:54.215882 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:54.405730 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:59.544280 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:59.609444 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:59.647206 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:42:59.721236 140204602009344 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:43:05.204475 140204610402048 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:43:05.242365 140204610402048 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:43:05.308782 140204610402048 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:43:05.386813 140204610402048 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+W0814 02:44:32.097234 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0814 02:45:37.901879 140204593616640 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:45:38.005348 140204593616640 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:45:38.166402 140204593616640 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:45:38.225256 140204593616640 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:51:54.082366 140204643972864 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:51:54.147854 140204643972864 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:51:54.213351 140204643972864 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+E0814 02:51:54.279361 140204643972864 _internal.py:122] Error on request:
+Traceback (most recent call last):
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 304, in run_wsgi
+    execute(self.server.app)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/serving.py", line 292, in execute
+    application_iter = app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 609, in __call__
+    return self._app(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 191, in wrapper
+    return wsgi_app(*args)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/security_validator.py", line 82, in __call__
+    return self._application(environ, start_response_proxy)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/path_prefix.py", line 71, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/experiment_id.py", line 76, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/empty_path_redirect.py", line 47, in __call__
+    return self._application(environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/backend/application.py", line 632, in _route_request
+    return self.exact_routes[clean_path](environ, start_response)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/werkzeug/wrappers/base_request.py", line 237, in application
+    resp = f(*args[:-2] + (request,))
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 283, in scalars_route
+    tag, run, experiment, output_format
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/plugins/scalar/scalars_plugin.py", line 182, in scalars_impl
+    run_tag_filter=provider.RunTagFilter(runs=[run], tags=[tag]),
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 907, in __init__
+    self._runs = self._parse_optional_string_set("runs", runs)
+  File "/home/brb/miniconda3/lib/python3.7/site-packages/tensorboard/data/provider.py", line 925, in _parse_optional_string_set
+    "got item of type %r: %r" % (name, type(item), item)
+TypeError: runs: expected `None` or collection of strings; got item of type <class 'NoneType'>: None
+W0814 11:30:01.176262 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 11:40:56.783937 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 11:44:31.971061 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 14:01:43.920053 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0814 14:16:19.867539 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+E0814 15:17:16.576462 140204627187456 _internal.py:122] ::ffff:127.0.0.1 - - [14/Aug/2020 15:17:16] code 400, message Bad HTTP/0.9 request type ('xx')
+E0815 07:24:24.293974 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [15/Aug/2020 07:24:24] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0815 11:54:12.240425 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [15/Aug/2020 11:54:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0815 12:10:36.188726 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [15/Aug/2020 12:10:36] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0815 19:03:55.213186 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [15/Aug/2020 19:03:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+E0815 19:37:12.979529 140204635580160 _internal.py:122] ::ffff:127.0.0.1 - - [15/Aug/2020 19:37:12] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+W0821 13:54:23.337825 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 13:58:08.564800 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 14:00:43.721529 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 14:04:43.977001 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 14:26:10.183048 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 15:19:53.051399 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 15:30:53.632554 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 16:34:42.759465 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0821 21:34:29.540309 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0824 22:46:09.882107 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 01:27:43.515001 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 12:10:49.052001 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 12:12:09.133142 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 12:19:39.556280 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 12:30:15.127954 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 12:44:35.886678 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 12:56:21.509696 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 15:08:38.822926 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0825 16:40:23.840214 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0826 15:47:42.451229 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0826 16:33:19.976259 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0826 16:36:35.157544 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0827 15:48:39.827631 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0829 19:32:59.486573 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0829 19:52:30.456628 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0829 20:15:36.576210 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0829 21:14:39.410941 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0829 21:47:36.012664 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0830 13:48:15.965040 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0830 14:32:48.685408 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0830 14:34:53.791402 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0830 16:15:58.295971 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+W0830 19:15:16.563195 140204890355456 plugin_event_multiplexer.py:263] Deleting accumulator '.'
+TensorBoard caught SIGTERM; exiting...

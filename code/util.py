@@ -59,16 +59,10 @@ def evaluating(model, x, y, mtype):
         return
 
 
-def generate_variable(shape, dtype=tf.float64, trainable=True, initial_value=None):
+def generate_variable(shape, dtype=tf.float32, trainable=True, initial_value=None):
     if initial_value is None:
         return tf.Variable(tf.random.normal(shape=shape, dtype=dtype), trainable=trainable, dtype=dtype)
     return tf.Variable(initial_value=initial_value, shape=shape, trainable=trainable, dtype=dtype)
-
-
-def generate_constant(shape, dtype=tf.float64, initial_value=None):
-    if initial_value is None:
-        return tf.constant(tf.random.normal(shape=shape, dtype=dtype), dtype=dtype)
-    return tf.constant(value=initial_value, shape=shape, dtype=dtype)
 
 
 def generate_junctive(junc):

@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+<<<<<<< HEAD
 from sklearn.datasets import fetch_openml
 from sklearn.base import BaseEstimator
 import os
@@ -15,6 +16,21 @@ dtype = tf.float32
 eps_mul = tf.constant(1e-3, dtype=dtype)
 eps_add = tf.constant(1e-30, dtype=dtype)
 
+=======
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
+a = tf.Variable([[0., 1., 2.], [3., 4., 5.], [6., 7., 8.]])
+b = tf.constant([[0., np.nan, 0.], [np.nan, np.nan, 2.]])
+y = tf.constant([0.,1.])
+with tf.GradientTape() as gt:
+    c = a - tf.expand_dims(b, -2)
+    d = tf.where(tf.math.is_nan(c), tf.zeros_like(c), c)
+    aw = tf.exp(-tf.reduce_sum(tf.math.square(d), -1))
+    p = tf.reduce_sum(aw, -1)
+    error = tf.keras.losses.mse(y,p)
+>>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a
 
 class Model(BaseEstimator):
     def __init__(self, rule_num, att_dim, res_dim, batch_size, epoch):
@@ -25,6 +41,7 @@ class Model(BaseEstimator):
         self.batch_size = batch_size
         self.epoch = epoch
 
+<<<<<<< HEAD
     def fit(self, x, y):
         s = tf.distribute.MirroredStrategy()
         ds = tf.data.Dataset.from_tensor_slices((x, tf.one_hot(y, self.res_dim)))
@@ -86,3 +103,6 @@ def create_brb(rule_num, att_dim, res_dim, x, y):
 if __name__ == "__main__":
     model = Model(16, 64, 1000)
     model.fit([1], [2])
+=======
+print(gt.gradient(error, a))
+>>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a

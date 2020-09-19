@@ -1,7 +1,11 @@
 import matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+<<<<<<< HEAD
 from matplotlib import cm
+=======
+import matplotlib.patches as patches
+>>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a
 import numpy as np
 import random
 
@@ -50,16 +54,26 @@ def draw3d_compare(ox, oy, oz, tx, ty, tz):
     plt.show()
 
 
-def draw2d(x, y):
+def draw2d(x, y, xlabel=None, ylabel=None):
     plt.figure()
     plt.plot(x, y)
+    plt.ylim()
+    if xlabel is not None:
+        plt.xlabel(xlabel)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
     plt.show()
 
 
-def draw2d2(ax, ay, bx, by):
+def draw2d2(ax, ay, bx, by, xlabel, ylabel, rlabel, blabel):
     plt.figure()
     plt.plot(ax, ay, 'r')
     plt.plot(bx, by, 'b')
+    red = patches.Patch(color='r',label=rlabel)
+    blue = patches.Patch(color='b',label=blabel)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend(handles=[red,blue])
     plt.show()
 
 
@@ -79,6 +93,7 @@ def drawxy(xy):
     plt.show()
 
 
+<<<<<<< HEAD
 def draw_surf(x, y, z):
     fig = plt.figure()
     ax = Axes3D(fig)
@@ -130,3 +145,19 @@ def main():
 if __name__ == "__main__":
     # matplotlib.use('Agg')
     main()
+=======
+def drawloss(loss, step):
+    fig, (ax1, ax2) = plt.subplots(2, 1, True)
+    ax1.plot(step, loss)
+    ax2.plot(step, loss)
+    ax1.set_ylim(bottom=1.5e-3)
+    ax2.set_ylim(bottom=0, top=1e-4)
+    ax1.spines['bottom'].set_visible(False)
+    ax2.spines['top'].set_visible(False)
+    ax1.xaxis.tick_top()
+    ax1.tick_params(labeltop=False)
+    ax2.xaxis.tick_bottom()
+    plt.xlabel('second')
+    plt.ylabel('MSE')
+    plt.show()
+>>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a

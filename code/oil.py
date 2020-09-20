@@ -1,13 +1,15 @@
 import os
 import tensorflow as tf
 import numpy as np
+import matplotlib
 from sklearn.preprocessing import StandardScaler
-from util import kfold, generate_variable, random_replace_with_nan
+from util import kfold
 from dataset import dataset_oil
+from view import draw3d_compare, draw3d
 
 # os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-# gpus = tf.config.experimental.list_physical_devices('GPU')
-# [tf.config.experimental.set_memory_growth(gpu, True) for gpu in gpus]
+gpus = tf.config.experimental.list_physical_devices('GPU')
+[tf.config.experimental.set_memory_growth(gpu, True) for gpu in gpus]
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 tf.keras.backend.set_floatx('float64')
@@ -22,7 +24,7 @@ class BRB(tf.keras.Model):
         super(BRB, self).__init__()
         self.a = tf.Variable(xa, dtype=tdtype)  # [rn, ad]
         self.b = tf.Variable(yb, dtype=tdtype)  # [rn, rd]
-        self.c = tf.Variable(0.5 * tf.ones((ad,), dtype=tdtype))
+        self.c = tf.Variable([[1.0, 0.01]] * rn, dtype=tdtype)
         # self.c = tf.Variable(0.5 * tf.ones((rn, ad,), dtype=tdtype))  # [rn, ad]
         self.u = tf.constant([0.0, 2.0, 4.0, 6.0, 8.0], dtype=tdtype)
         self.eps = tf.constant(1e-10, dtype=tdtype)
@@ -44,10 +46,11 @@ class BRB(tf.keras.Model):
 
 
 def create(rn, ad, rd, x, y):
-    mask = np.argsort(y)
-    mask = np.concatenate((mask[:int(rn/2)], mask[-int(rn/2):]))
-    return BRB(rn, ad, rd, x[mask],
-               [[1, -1, -1, -1, -1]] * int(rn/2) + [[-1, -1, -1, -1, 1]] * int(rn/2))
+    mask = np.arange(x.shape[0], dtype=np.int)
+    np.random.shuffle(mask)
+    mask = mask[:rn]
+    xa, yb = x[mask], -np.abs(np.array([[0., 2., 4., 6., 8.]] * rn) - np.expand_dims(y[mask], -1))
+    return BRB(rn, ad, rd, xa, yb)
 
 
 def training(x, y, rn, ad, rd, ep, bs):
@@ -55,8 +58,9 @@ def training(x, y, rn, ad, rd, ep, bs):
     with s.scope():
         # model = BRB(rn, ad, rd, tf.random.normal((rn, ad)), tf.zeros((rn, rd)))
         model = create(rn, ad, rd, x, y)
-        tb = tf.keras.callbacks.TensorBoard(log_dir='logs')
-        model.fit(x, y, batch_size=bs, epochs=ep, verbose=0, callbacks=[tb])
+        # draw3d_compare(x[:, 0], x[:, 1], y, model.predict(x))
+        # tb = tf.keras.callbacks.TensorBoard(log_dir='logs')
+        model.fit(x, y, batch_size=bs, epochs=ep, verbose=1, callbacks=[])
     return model
 
 # good  16 5000 64 3.417
@@ -65,9 +69,10 @@ def training(x, y, rn, ad, rd, ep, bs):
 
 def main():
     data, target = dataset_oil()
-    data, target = StandardScaler().fit_transform(data).astype(ndtype), target.astype(ndtype)
+    data, target = data.astype(ndtype), target.astype(ndtype)
+    # data, target = StandardScaler().fit_transform(data).astype(ndtype), target.astype(ndtype)
     data_name, att_dim, res_dim = "oil", 2, 5
-    experiment_num, rule_num, epoch, batch_size = 20, 16, 5000, 64
+    experiment_num, rule_num, epoch, batch_size = 20, 16, 500, 64
     sum_mse, sum_cnt = 0.0, 0
     for en in range(experiment_num):
         for _, _, train_data, train_target in kfold(data, target, 4, 'numeric', random_state=en):
@@ -75,11 +80,16 @@ def main():
                              rule_num, att_dim, res_dim,
                              epoch, batch_size)
             loss, mae, mse = model.evaluate(data, target)
-            sum_mse += mse
-            sum_cnt += 1
-            tf.summary.scalar('mse_each_%s' % data_name, mse, sum_cnt)
-            tf.summary.scalar('mse_%s' % data_name, sum_mse / sum_cnt, sum_cnt)
+            draw3d_compare(data[:, 0], data[:, 1], target, model.predict(data))
+            exit(0)
+
+            # sum_mse += mse
+            # sum_cnt += 1
+            # print("mse avg:%f mse now: %f" % sum_mse/sum_cnt, mse)
+            # tf.summary.scalar('mse_each_%s' % data_name, mse, sum_cnt)
+            # tf.summary.scalar('mse_%s' % data_name, sum_mse / sum_cnt, sum_cnt)
 
 
 if __name__ == "__main__":
+    matplotlib.use('Agg')
     main()

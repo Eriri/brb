@@ -1,11 +1,8 @@
 import matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
+from matplotlib import patches
 from matplotlib import cm
-=======
-import matplotlib.patches as patches
->>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a
 import numpy as np
 import random
 
@@ -42,16 +39,29 @@ def draw(x, y1, l1, y2, l2):
 def draw3d(x, y, z):
     fig = plt.figure()
     a = Axes3D(fig)
-    a.scatter(x, y, z, c='r')
-    plt.show()
+    a.scatter(x, y, z, c='b')
+    a.set_ylabel('Pressure Difference')
+    a.set_xlabel('Flow Difference')
+    a.set_zlabel('Leak Size')
+    a.set_rasterized(True)
+    plt.savefig('oil.eps', format='eps')
+    # plt.show()
 
 
-def draw3d_compare(ox, oy, oz, tx, ty, tz):
+def draw3d_compare(x, y, z1, z2):
     fig = plt.figure()
     a = Axes3D(fig)
-    a.scatter(ox, oy, oz, c='b')
-    a.scatter(tx, ty, tz, c='r')
-    plt.show()
+    a.scatter(x, y, z1, c='b')
+    a.scatter(x, y, z2, c='r')
+    a.set_ylabel('Pressure Difference')
+    a.set_xlabel('Flow Difference')
+    a.set_zlabel('Leak Size')
+    a.set_rasterized(True)
+    red = patches.Patch(color='r', label='initial brb output')
+    blue = patches.Patch(color='b', label='original leak size')
+    plt.legend(handles=[red, blue])
+    plt.savefig('oil_compare_after.eps', format='eps')
+    # plt.show()
 
 
 def draw2d(x, y, xlabel=None, ylabel=None):
@@ -69,31 +79,14 @@ def draw2d2(ax, ay, bx, by, xlabel, ylabel, rlabel, blabel):
     plt.figure()
     plt.plot(ax, ay, 'r')
     plt.plot(bx, by, 'b')
-    red = patches.Patch(color='r',label=rlabel)
-    blue = patches.Patch(color='b',label=blabel)
+    # red = patches.Patch(color='r', label=rlabel)
+    # blue = patches.Patch(color='b', label=blabel)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.legend(handles=[red,blue])
+    plt.legend(handles=[red, blue])
     plt.show()
 
 
-def draw2d3(x, y, X, Y):
-    plt.figure()
-    plt.plot(x, y)
-    plt.plot(X, Y, 'ro')
-    plt.show()
-
-
-def drawxy(xy):
-    '''[(x,y,label),(x,y,label)...(x,y,label)]'''
-    plt.figure()
-    for x, y, l in xy:
-        plt.plot(x, y, label=l)
-    plt.legend()
-    plt.show()
-
-
-<<<<<<< HEAD
 def draw_surf(x, y, z):
     fig = plt.figure()
     ax = Axes3D(fig)
@@ -145,19 +138,3 @@ def main():
 if __name__ == "__main__":
     # matplotlib.use('Agg')
     main()
-=======
-def drawloss(loss, step):
-    fig, (ax1, ax2) = plt.subplots(2, 1, True)
-    ax1.plot(step, loss)
-    ax2.plot(step, loss)
-    ax1.set_ylim(bottom=1.5e-3)
-    ax2.set_ylim(bottom=0, top=1e-4)
-    ax1.spines['bottom'].set_visible(False)
-    ax2.spines['top'].set_visible(False)
-    ax1.xaxis.tick_top()
-    ax1.tick_params(labeltop=False)
-    ax2.xaxis.tick_bottom()
-    plt.xlabel('second')
-    plt.ylabel('MSE')
-    plt.show()
->>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a

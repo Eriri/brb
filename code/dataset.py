@@ -1,21 +1,6 @@
 import numpy as np
 from sklearn.datasets import fetch_openml
 from sklearn.utils import shuffle
-<<<<<<< HEAD
-=======
-
-def dataset_adult():
-    ds = fetch_openml('adult', 2)
-    fn, cg = ds['feature_names'], ds['categories']
-    nis = [fn.index(i) for i in fn if i not in cg.keys() and i != 'fnlwgt']
-    cis = [fn.index(i) for i in fn if i in cg.keys()]
-    cgs = [len(cg[att]) for att in cg.keys()]
-    res, pot = ds['target'], list(set(ds['target']))
-    res = np.array(np.vectorize(lambda x: pot.index(x))(res), np.int32)
-    nume, cate = np.array(ds['data'][:, nis], np.float32), np.array(ds['data'][:, cis], np.float32)
-    cate = tuple([c for c in np.transpose(cate)])
-    return (nume, cate), cgs, res
->>>>>>> 1adf3747c1285da99a188dea7ccd06289480272a
 
 
 def dataset_numeric_classification(name, version='active'):
@@ -25,12 +10,14 @@ def dataset_numeric_classification(name, version='active'):
     target = np.array(np.vectorize(lambda x: pot.index(x))(target), np.int32)
     return data, target, data.shape[-1], len(pot)
 
+
 def missing_at_random(data, rate, random_state=None):
     en = np.prod(date.shape)
     men = np.ceil(en * rate)
     mask = np.array(shuffle([False] * (en - men) + [True] * men, random_state=random_state))
     data[mask.reshape(data.shape)] = np.nan
     return data
+
 
 def missing_at_random(data, rate, random_state=None):
     en = np.prod(data.shape).astype(np.int)
